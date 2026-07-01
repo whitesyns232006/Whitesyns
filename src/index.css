@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* Local Font Configuration */
+@font-face {
+  font-family: 'Tenor Sans';
+  src: url('./assets/Tenor_Sans/TenorSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+  body {
+    font-family: 'Tenor Sans', sans-serif;
+  }
+}

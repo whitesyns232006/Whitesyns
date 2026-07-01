@@ -30,10 +30,11 @@ const OrderForm = () => {
   const [errors, setErrors] = useState({});
   const [showBilling, setShowBilling] = useState(false);
   const [phonePopup, setPhonePopup] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
-    const { id, value, type, name, checked } = e.target;
+    const { id, value, type } = e.target;
     
     if (type === 'radio') {
       setFormData(prev => ({
@@ -157,9 +158,33 @@ const OrderForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Submit to Google Sheets
+  const submitToGoogleSheets = async (data) => {
+    // Google Apps Script URL (same as index.html)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxNr2WQt4o2vPyF04VYn9b-_JehP6Pnf6hVGHRuQbt2Vg9KGObIGognU901G-umGfR7/exec';
+    
+    try {
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error submitting to Google Sheets:', error);
+      return false;
+    }
+  };
+
   // Handle confirm order button
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
     if (validateForm()) {
+      setIsSubmitting(true);
+      
       // Calculate total
       const quantity = parseInt(formData.quantity);
       let total;
@@ -172,7 +197,36 @@ const OrderForm = () => {
         total = 699 * quantity;
       }
 
-      // Prepare order data
+      // Determine delivery time
+      let deliveryTime = "6 days";
+      if (formData.city === "punjab" || formData.city === "kpk") {
+        deliveryTime = "5 days";
+      }
+
+      // Prepare order data for Google Sheets
+      const sheetData = {
+        fullName: formData.fullName,
+        email: formData.email,
+        quantity: formData.quantity,
+        address: formData.address,
+        appartment: formData.appartment || '',
+        country: formData.country,
+        city: formData.city,
+        postalCode: formData.postalCode || '',
+        phone: formData.phone,
+        billingOption: formData.billingOption,
+        billingName: formData.billingName || '',
+        billingAddress: formData.billingAddress || '',
+        billingPhone: formData.billingPhone || '',
+        totalAmount: total,
+        deliveryTime: deliveryTime,
+        orderDate: new Date().toLocaleString()
+      };
+
+      // Submit to Google Sheets
+      await submitToGoogleSheets(sheetData);
+
+      // Prepare order data for confirmation page
       const orderData = {
         ...formData,
         totalAmount: total,
@@ -180,6 +234,8 @@ const OrderForm = () => {
         isSpecialOffer: isSpecialOffer
       };
 
+      setIsSubmitting(false);
+      
       // Navigate to order confirmation page
       navigate('/confirmation', { state: { orderData } });
     }
@@ -469,9 +525,10 @@ const OrderForm = () => {
             <button
               type="button"
               onClick={handleConfirmOrder}
-              className="px-10 py-3 bg-linear-to-r from-[#A6ACAF] via-[#D5DBDB] to-[#7F8C8D] text-[#111] border border-white/30 rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#7F8C8D]/30 hover:scale-[1.02] active:scale-[0.98] flex-1"
+              disabled={isSubmitting}
+              className={`px-10 py-3 bg-linear-to-r from-[#A6ACAF] via-[#D5DBDB] to-[#7F8C8D] text-[#111] border border-white/30 rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#7F8C8D]/30 hover:scale-[1.02] active:scale-[0.98] flex-1 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              Confirm Order
+              {isSubmitting ? 'Submitting...' : 'Confirm Order'}
             </button>
             <a
               href="/"

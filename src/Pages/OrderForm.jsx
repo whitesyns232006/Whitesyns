@@ -190,11 +190,11 @@ const OrderForm = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="min-h-[70vh] bg-gradient-to-b from-[#FDFBF7] to-[#F5F0E8] py-12 md:py-16 px-[5%] md:px-[10%]"
+      className="min-h-[70vh] bg-linear-to-b from-[#FDFBF7] to-[#F5F0E8] py-12 md:py-16 px-[5%] md:px-[10%]"
     >
       {/* Decorative top bar */}
       <div className="max-w-225 mx-auto mb-8">
-        <div className="w-20 h-1 bg-gradient-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
+        <div className="w-20 h-1 bg-linear-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
       </div>
 
       {/* Order Form Header */}
@@ -368,7 +368,7 @@ const OrderForm = () => {
                 className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? 'border-red-500' : 'border-[#C2E5D8]'} focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300`}
               />
               {phonePopup && (
-                <div className="absolute bottom-full left-0 mb-2 bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white px-4 py-2 rounded-lg text-sm shadow-lg w-full max-w-xs">
+                <div className="absolute bottom-full left-0 mb-2 bg-linear-to-r from-[#D4AF37] to-[#C9A227] text-white px-4 py-2 rounded-lg text-sm shadow-lg w-full max-w-xs">
                   Enter Phone Number carefully, we may contact you to confirm order, Otherwise order will not be dispatched
                   <div className="absolute top-full left-5 border-8 border-transparent border-t-[#D4AF37]"></div>
                 </div>
@@ -469,7 +469,7 @@ const OrderForm = () => {
             <button
               type="button"
               onClick={handleConfirmOrder}
-              className="px-10 py-3 bg-gradient-to-r from-[#A6ACAF] via-[#D5DBDB] to-[#7F8C8D] text-[#111] border border-white/30 rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#7F8C8D]/30 hover:scale-[1.02] active:scale-[0.98] flex-1"
+              className="px-10 py-3 bg-linear-to-r from-[#A6ACAF] via-[#D5DBDB] to-[#7F8C8D] text-[#111] border border-white/30 rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#7F8C8D]/30 hover:scale-[1.02] active:scale-[0.98] flex-1"
             >
               Confirm Order
             </button>
@@ -485,7 +485,7 @@ const OrderForm = () => {
 
       {/* Bottom decorative bar */}
       <div className="max-w-225 mx-auto mt-8">
-        <div className="w-20 h-1 bg-gradient-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
+        <div className="w-20 h-1 bg-linear-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
       </div>
     </motion.main>
   );

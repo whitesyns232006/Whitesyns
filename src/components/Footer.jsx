@@ -7,10 +7,10 @@ const Footer = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-6">
         {/* Logo Section */}
         <div className="flex flex-col">
-          <Link to="/" className="font-['Tenor_Sans'] text-2xl md:text-[1.8rem] bg-gradient-to-r from-[#D4AF37] to-[#C9A227] bg-clip-text text-transparent no-underline tracking-wide font-medium mb-2">
+          <Link to="/" className="font-['Tenor_Sans'] text-2xl md:text-[1.8rem] bg-linear-to-r from-[#D4AF37] to-[#C9A227] bg-clip-text text-transparent no-underline tracking-wide font-medium mb-2">
             Whitesyns
           </Link>
-          <p className="text-sm md:text-base text-[#555] leading-relaxed max-w-[250px]">
+          <p className="text-sm md:text-base text-[#555] leading-relaxed max-w-62.5">
             Natural Care Solutions
           </p>
         </div>
@@ -74,7 +74,7 @@ const Footer = () => {
           
           {/* Email */}
           <div className="flex items-center gap-2 mb-3 text-sm md:text-base text-[#555]">
-            <svg className="w-4 h-4 md:w-5 md:h-5 min-w-[16px] opacity-80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-4 h-4 md:w-5 md:h-5 min-w-4 opacity-80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5Z" stroke="currentColor" strokeWidth="1.5"/>
               <path d="M3 8L12 13L21 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
@@ -83,7 +83,7 @@ const Footer = () => {
 
           {/* Phone */}
           <div className="flex items-center gap-2 mb-4 text-sm md:text-base text-[#555]">
-            <svg className="w-4 h-4 md:w-5 md:h-5 min-w-[16px] opacity-80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-4 h-4 md:w-5 md:h-5 min-w-4 opacity-80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M5 4H9L11 9L8.5 10.5C9.57096 12.6715 11.3285 14.429 13.5 15.5L15 13L20 15V19C20 19.5304 19.7893 20.0391 19.4142 20.4142C19.0391 20.7893 18.5304 21 18 21C14.0993 20.763 10.4202 19.1065 7.65683 16.3432C4.8935 13.5798 3.23705 9.90074 3 6C3 5.46957 3.21071 4.96086 3.58579 4.58579C3.96086 4.21071 4.46957 4 5 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M15 7C15.5304 7 16.0391 7.21071 16.4142 7.58579C16.7893 7.96086 17 8.46957 17 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M15 3C16.5913 3 18.1174 3.63214 19.2426 4.75736C20.3679 5.88258 21 7.4087 21 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -109,7 +109,7 @@ const Footer = () => {
               href="https://www.instagram.com/whitesynsPakistan/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white border border-[#555] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:bg-gradient-to-r hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#bc1888] hover:border-transparent group"
+              className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white border border-[#555] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:bg-linear-to-r hover:from-[#f09433] hover:via-[#e6683c] hover:to-[#bc1888] hover:border-transparent group"
               aria-label="Instagram"
             >
               <svg className="w-4 h-4 md:w-5 md:h-5 fill-[#555] group-hover:fill-white transition-all duration-300" viewBox="0 0 24 24">

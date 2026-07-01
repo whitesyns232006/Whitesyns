@@ -5,12 +5,16 @@ const HomePage = () => {
   return (
     <main className="w-full bg-[#F5FFFA] overflow-x-hidden">
       
-      {/* Hero Image - Full width with equal top and bottom cropping */}
-      <div className="w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+      {/* Hero Image - Fully Responsive with auto height */}
+      <div className="w-full overflow-hidden">
         <img 
           src="header.webp" 
           alt="Whitesyns Product" 
-          className="w-full h-full object-cover object-center"
+          className="w-full h-auto object-contain"
+          style={{
+            maxHeight: '90vh',
+            minHeight: '150px',
+          }}
         />
       </div>
 

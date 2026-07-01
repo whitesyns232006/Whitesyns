@@ -1,7 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  // Handle Shop Now button click
+  const handleShopNow = () => {
+    navigate('/orders');
+  };
+
   return (
     <main className="w-full bg-[#F5FFFA] overflow-x-hidden">
       
@@ -125,9 +133,27 @@ const HomePage = () => {
             </span>
           </div>
 
-          <button className="bg-linear-to-r from-[#A6ACAF] to-[#566573] text-[#111] border border-white/25 px-10 py-4 rounded-[30px] text-lg font-['Josefin_Sans'] font-medium cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-xl relative overflow-hidden group mb-8">
-            <span className="absolute inset-0 -translate-x-full w-full h-full bg-linear-to-r from-transparent via-white/50 to-transparent transition-transform duration-500 group-hover:translate-x-full"></span>
-            Shop Now
+          {/* Shop Now Button - Shiny Premium Silver */}
+          <button 
+            onClick={handleShopNow}
+            className="relative px-10 py-4 rounded-[30px] text-lg font-['Josefin_Sans'] font-medium cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl group overflow-hidden bg-gradient-to-r from-[#E8E8E8] via-[#F5F5F5] to-[#D0D0D0] text-[#222] border border-white/30"
+          >
+            {/* Shiny overlay effect */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+            
+            {/* Top highlight line */}
+            <span className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/80 to-transparent"></span>
+            
+            {/* Bottom shadow line */}
+            <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent"></span>
+            
+            {/* Button content */}
+            <span className="relative flex items-center gap-3">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+              Shop Now
+            </span>
           </button>
 
           <p className="font-['Josefin_Sans'] text-[#555] text-xl tracking-wide italic relative pl-8">

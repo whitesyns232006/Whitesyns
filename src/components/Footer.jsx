@@ -93,10 +93,12 @@ const Footer = () => {
 
           {/* Social Icons */}
           <div className="flex gap-3">
-            {/* Facebook */}
+            {/* Facebook - Updated Link */}
             <a 
-              href="#" 
-              className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white border border-[#555] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:bg-[#D4AF37] hover:border-[#D4AF37] group"
+              href="https://www.facebook.com/Whitesynspak" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white border border-[#555] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:bg-[#1877F2] hover:border-[#1877F2] group"
               aria-label="Facebook"
             >
               <svg className="w-4 h-4 md:w-5 md:h-5 fill-[#555] group-hover:fill-white transition-all duration-300" viewBox="0 0 24 24">

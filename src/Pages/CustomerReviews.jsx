@@ -694,7 +694,7 @@ const CustomerReviews = () => {
 
                 <div className="text-center mt-2">
                   <Link 
-                    to="/TermsOfService" 
+                    to="/terms" 
                     className="text-xs text-[#D4AF37] hover:underline transition-colors duration-300"
                   >
                     📖 Learn About Our Reviews Policy

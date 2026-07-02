@@ -8,22 +8,22 @@ const CustomerReviews = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [visibleCount, setVisibleCount] = useState(5);
-  
-  // Review form state
-  const [formData, setFormData] = useState({
-    name: '',
-    rating: 0,
-    review: '',
-    email: ''
-  });
-  const [hoverRating, setHoverRating] = useState(0);
   const [submitMessage, setSubmitMessage] = useState('');
-  const [submitMessageType, setSubmitMessageType] = useState(''); // 'success' or 'error'
+  const [submitMessageType, setSubmitMessageType] = useState('');
 
-  // Google Apps Script URL
+  // Updated Google Apps Script URL
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-8qdDUcWWwtVjCeiZ3J4mdPW1_NXBf_eKa77fSZxjJ5HEcLXZ8umbZyXN2DziQnzp/exec';
 
-  // Fetch reviews on component mount
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    rating: 0,
+    review: ''
+  });
+  const [hoverRating, setHoverRating] = useState(0);
+
+  // Fetch reviews on mount
   useEffect(() => {
     fetchReviews();
   }, []);
@@ -77,13 +77,17 @@ const CustomerReviews = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Reset messages
     setSubmitMessage('');
     setSubmitMessageType('');
     
     // Validation
     if (!formData.name.trim()) {
       setSubmitMessage('Please enter your name');
+      setSubmitMessageType('error');
+      return;
+    }
+    if (!formData.email.trim()) {
+      setSubmitMessage('Please enter your email to verify your purchase');
       setSubmitMessageType('error');
       return;
     }
@@ -94,11 +98,6 @@ const CustomerReviews = () => {
     }
     if (!formData.review.trim()) {
       setSubmitMessage('Please write your review');
-      setSubmitMessageType('error');
-      return;
-    }
-    if (!formData.email.trim()) {
-      setSubmitMessage('Please enter your email to verify your purchase');
       setSubmitMessageType('error');
       return;
     }
@@ -115,17 +114,14 @@ const CustomerReviews = () => {
         body: JSON.stringify({
           action: 'submitReview',
           name: formData.name,
+          email: formData.email,
           rating: formData.rating,
-          review: formData.review,
-          email: formData.email
+          review: formData.review
         })
       });
       
-      // Since we're using no-cors, we can't read response
-      // We'll assume success and show appropriate message
-      
       // Reset form
-      setFormData({ name: '', rating: 0, review: '', email: '' });
+      setFormData({ name: '', email: '', rating: 0, review: '' });
       setSubmitMessage('✅ Thank you! Your verified review has been published.');
       setSubmitMessageType('success');
       
@@ -143,7 +139,7 @@ const CustomerReviews = () => {
     }
   };
 
-  // Render stars with verified badge support
+  // Render stars
   const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, showVerified = false) => {
     const stars = [];
     const maxRating = 5;
@@ -168,7 +164,6 @@ const CustomerReviews = () => {
       );
     }
     
-    // Add verified badge if needed
     if (showVerified) {
       stars.push(
         <span key="verified" className="ml-2 text-xs text-green-600 font-medium">
@@ -248,7 +243,7 @@ const CustomerReviews = () => {
                   <div>
                     <h4 className="font-['Tenor_Sans'] text-base text-[#333] flex items-center gap-2 flex-wrap">
                       {review.name}
-                      {/* ✅ Verified Purchase Badge */}
+                      {/* Verified badge */}
                       {review.verified === 'Yes' && (
                         <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
                           ✅ Verified
@@ -310,7 +305,7 @@ const CustomerReviews = () => {
               />
             </div>
 
-            {/* Email Input - Required for verification */}
+            {/* Email Input */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Email <span className="text-red-500">*</span>

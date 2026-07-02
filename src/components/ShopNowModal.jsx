@@ -47,10 +47,10 @@ const ShopNowModal = () => {
             {/* Center - Text */}
             <div className="flex-1 min-w-0">
               <p className="text-xs md:text-sm font-['Tenor_Sans'] text-[#333] truncate">
-                ✨ <span className="font-bold text-[#D4AF37]">Whitesyns</span>
+                 <span className="font-bold text-[#D4AF37]">Whitesyns</span>
               </p>
               <p className="text-[10px] md:text-xs text-[#666] truncate">
-                Natural Teeth Whitening
+                Natural Teeth WhiteningNatural Herbal Teeth Whitening Care
               </p>
             </div>
 

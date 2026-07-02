@@ -12,16 +12,12 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-  // Form visibility state
   const [isFormOpen, setIsFormOpen] = useState(false);
   const formRef = useRef(null);
 
-  // ✅ Help Modal State (Custom)
   const [showHelpModal, setShowHelpModal] = useState(false);
-
-  // Modal states
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState(''); // 'edit' or 'delete'
+  const [modalMode, setModalMode] = useState('');
   const [modalEmail, setModalEmail] = useState('');
   const [modalReview, setModalReview] = useState('');
   const [modalRating, setModalRating] = useState(0);
@@ -54,12 +50,8 @@ const CustomerReviews = () => {
           setIsFormOpen(false);
           resetForm();
         }
-        if (showHelpModal) {
-          setShowHelpModal(false);
-        }
-        if (showModal) {
-          setShowModal(false);
-        }
+        if (showHelpModal) setShowHelpModal(false);
+        if (showModal) setShowModal(false);
       }
     };
 
@@ -89,19 +81,12 @@ const CustomerReviews = () => {
     resetForm();
   };
 
-  // ✅ Open Help Modal (instead of browser confirm)
-  const openHelpModal = () => {
-    setShowHelpModal(true);
-  };
-
-  // ✅ Handle Help Modal Choice
+  const openHelpModal = () => setShowHelpModal(true);
+  
   const handleHelpChoice = (choice) => {
     setShowHelpModal(false);
-    if (choice === 'edit') {
-      openModal('edit');
-    } else if (choice === 'delete') {
-      openModal('delete');
-    }
+    if (choice === 'edit') openModal('edit');
+    else if (choice === 'delete') openModal('delete');
   };
 
   useEffect(() => {
@@ -134,7 +119,6 @@ const CustomerReviews = () => {
     const total = reviewsData.length;
     const sum = reviewsData.reduce((acc, review) => acc + parseInt(review.rating), 0);
     const average = (sum / total).toFixed(1);
-    
     setStats({ average, total });
   };
 
@@ -146,10 +130,6 @@ const CustomerReviews = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
-  // ============================================
-  // MODAL FUNCTIONS
-  // ============================================
 
   const openModal = (mode) => {
     setModalMode(mode);
@@ -172,122 +152,7 @@ const CustomerReviews = () => {
     setModalRating(rating);
   };
 
-  // Handle Edit Review
-  const handleEditReview = async () => {
-    setModalMessage('');
-    setModalMessageType('');
-
-    if (!modalEmail.trim()) {
-      setModalMessage('Please enter your email');
-      setModalMessageType('error');
-      return;
-    }
-    if (!modalReview.trim()) {
-      setModalMessage('Please write your review');
-      setModalMessageType('error');
-      return;
-    }
-    if (modalRating === 0) {
-      setModalMessage('Please select a rating');
-      setModalMessageType('error');
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      
-      const response = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'editReview',
-          email: modalEmail,
-          review: modalReview,
-          rating: modalRating
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setModalMessage('✅ ' + result.message);
-        setModalMessageType('success');
-        setModalEmail('');
-        setModalReview('');
-        setModalRating(0);
-        
-        setTimeout(() => {
-          closeModal();
-          fetchReviews();
-        }, 2000);
-      } else {
-        setModalMessage('❌ ' + result.error);
-        setModalMessageType('error');
-      }
-    } catch (error) {
-      console.error('Error editing review:', error);
-      setModalMessage('❌ Network error. Please try again.');
-      setModalMessageType('error');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Handle Delete Review
-  const handleDeleteReview = async () => {
-    setModalMessage('');
-    setModalMessageType('');
-
-    if (!modalEmail.trim()) {
-      setModalMessage('Please enter your email');
-      setModalMessageType('error');
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      
-      const response = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'deleteReview',
-          email: modalEmail
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setModalMessage('✅ ' + result.message);
-        setModalMessageType('success');
-        setModalEmail('');
-        
-        setTimeout(() => {
-          closeModal();
-          fetchReviews();
-        }, 2000);
-      } else {
-        setModalMessage('❌ ' + result.error);
-        setModalMessageType('error');
-      }
-    } catch (error) {
-      console.error('Error deleting review:', error);
-      setModalMessage('❌ Network error. Please try again.');
-      setModalMessageType('error');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // ============================================
-  // SUBMIT REVIEW
-  // ============================================
-
+  // ✅ SUBMIT REVIEW
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -318,8 +183,10 @@ const CustomerReviews = () => {
     try {
       setSubmitting(true);
       
-      const response = await fetch(SCRIPT_URL, {
+      // ✅ no-cors mode
+      await fetch(SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -332,26 +199,117 @@ const CustomerReviews = () => {
         })
       });
       
-      const result = await response.json();
+      setFormData({ name: '', email: '', rating: 0, review: '' });
+      setSubmitMessage('✅ Thank you! Your review has been submitted.');
+      setSubmitMessageType('success');
       
-      if (result.success) {
-        setFormData({ name: '', email: '', rating: 0, review: '' });
-        setSubmitMessage('✅ ' + result.message);
-        setSubmitMessageType('success');
-        
-        setTimeout(() => {
-          fetchReviews();
-          closeForm();
-        }, 2000);
-      } else {
-        setSubmitMessage('❌ ' + result.error);
-        setSubmitMessageType('error');
-      }
+      setTimeout(() => {
+        fetchReviews();
+        closeForm();
+      }, 2000);
       
     } catch (error) {
       console.error('Error submitting review:', error);
       setSubmitMessage('❌ Network error. Please try again.');
       setSubmitMessageType('error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ✅ EDIT REVIEW
+  const handleEditReview = async () => {
+    setModalMessage('');
+    setModalMessageType('');
+
+    if (!modalEmail.trim()) {
+      setModalMessage('Please enter your email');
+      setModalMessageType('error');
+      return;
+    }
+    if (!modalReview.trim()) {
+      setModalMessage('Please write your review');
+      setModalMessageType('error');
+      return;
+    }
+    if (modalRating === 0) {
+      setModalMessage('Please select a rating');
+      setModalMessageType('error');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'editReview',
+          email: modalEmail,
+          review: modalReview,
+          rating: modalRating
+        })
+      });
+      
+      setModalMessage('✅ Your review has been updated!');
+      setModalMessageType('success');
+      
+      setTimeout(() => {
+        closeModal();
+        fetchReviews();
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error editing review:', error);
+      setModalMessage('❌ Network error. Please try again.');
+      setModalMessageType('error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ✅ DELETE REVIEW
+  const handleDeleteReview = async () => {
+    setModalMessage('');
+    setModalMessageType('');
+
+    if (!modalEmail.trim()) {
+      setModalMessage('Please enter your email');
+      setModalMessageType('error');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'deleteReview',
+          email: modalEmail
+        })
+      });
+      
+      setModalMessage('✅ Your review has been deleted!');
+      setModalMessageType('success');
+      
+      setTimeout(() => {
+        closeModal();
+        fetchReviews();
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      setModalMessage('❌ Network error. Please try again.');
+      setModalMessageType('error');
     } finally {
       setSubmitting(false);
     }
@@ -673,7 +631,6 @@ const CustomerReviews = () => {
                     {submitting ? 'Submitting...' : 'Submit Review'}
                   </button>
 
-                  {/* ✅ Help Button - Opens Custom Modal instead of browser confirm */}
                   <button
                     type="button"
                     onClick={openHelpModal}
@@ -701,9 +658,7 @@ const CustomerReviews = () => {
         </div>
       </motion.section>
 
-      {/* ============================================
-          CUSTOM HELP MODAL (Replaces browser confirm)
-      ============================================ */}
+      {/* HELP MODAL */}
       {showHelpModal && (
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <motion.div 
@@ -713,12 +668,8 @@ const CustomerReviews = () => {
           >
             <div className="text-center mb-4">
               <div className="text-4xl mb-3">🛠️</div>
-              <h3 className="font-['Tenor_Sans'] text-xl text-[#333]">
-                Choose an Option
-              </h3>
-              <p className="text-sm text-[#555] mt-1">
-                What would you like to do with your review?
-              </p>
+              <h3 className="font-['Tenor_Sans'] text-xl text-[#333]">Choose an Option</h3>
+              <p className="text-sm text-[#555] mt-1">What would you like to do with your review?</p>
             </div>
 
             <div className="space-y-3">
@@ -751,9 +702,7 @@ const CustomerReviews = () => {
         </div>
       )}
 
-      {/* ============================================
-          EDIT/DELETE MODAL
-      ============================================ */}
+      {/* EDIT/DELETE MODAL */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <motion.div 

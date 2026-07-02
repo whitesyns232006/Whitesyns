@@ -7,6 +7,8 @@ const CustomerReviews = () => {
   const [stats, setStats] = useState({ average: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(5); // Initially show 5 reviews
+  const [showAll, setShowAll] = useState(false);
   
   // Review form state
   const [formData, setFormData] = useState({
@@ -18,7 +20,7 @@ const CustomerReviews = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  // Google Apps Script URL (provided by you)
+  // Google Apps Script URL
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbufiZrYq25-lLcwb3fFnsAt8c-6KNSVRC9mQqpO6cg8HwC2F1rXJ1m4jIE16W9OxY/exec';
 
   // Fetch reviews on component mount
@@ -139,7 +141,7 @@ const CustomerReviews = () => {
           onClick={() => interactive && onStarClick && onStarClick(i)}
           onMouseEnter={() => interactive && onStarHover && onStarHover(i)}
           onMouseLeave={() => interactive && onStarHover && onStarHover(0)}
-          className={`text-2xl md:text-3xl transition-all duration-200 ${
+          className={`text-xl md:text-2xl transition-all duration-200 ${
             interactive ? 'cursor-pointer hover:scale-110' : 'cursor-default'
           } ${i <= currentRating ? 'text-[#D4AF37]' : 'text-gray-300'}`}
           disabled={!interactive}
@@ -152,14 +154,24 @@ const CustomerReviews = () => {
     return stars;
   };
 
+  // Load more reviews
+  const loadMoreReviews = () => {
+    setVisibleCount(prev => prev + 5);
+  };
+
+  // Get visible reviews
+  const getVisibleReviews = () => {
+    return reviews.slice(0, visibleCount);
+  };
+
   // Loading state
   if (loading) {
     return (
-      <section className="py-16 px-[10%] bg-[#F5FFFA] border-y border-[#C2E5D8]">
+      <section className="py-12 px-[5%] md:px-[10%] bg-[#F5FFFA] border-y border-[#C2E5D8]">
         <div className="max-w-300 mx-auto text-center">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-32 mx-auto"></div>
+            <div className="h-7 bg-gray-200 rounded w-40 mx-auto mb-3"></div>
+            <div className="h-3 bg-gray-200 rounded w-28 mx-auto"></div>
           </div>
         </div>
       </section>
@@ -168,22 +180,22 @@ const CustomerReviews = () => {
 
   return (
     <motion.section 
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="py-16 px-[5%] md:px-[10%] bg-gradient-to-b from-[#F5FFFA] to-[#E8F5EE] border-y border-[#C2E5D8]"
+      transition={{ duration: 0.5 }}
+      className="py-12 px-[5%] md:px-[10%] bg-gradient-to-b from-[#F5FFFA] to-[#E8F5EE] border-y border-[#C2E5D8]"
     >
       <div className="max-w-300 mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-10">
-          <h2 className="font-['Tenor_Sans'] text-3xl md:text-4xl text-[#333] mb-3 relative inline-block">
+        {/* Section Header - Smaller */}
+        <div className="text-center mb-8">
+          <h2 className="font-['Tenor_Sans'] text-2xl md:text-3xl text-[#333] mb-2 relative inline-block">
             ⭐ Customer Reviews
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-[#D4AF37]"></span>
+            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-[#D4AF37]"></span>
           </h2>
-          <div className="mt-4 flex items-center justify-center gap-4 flex-wrap">
+          <div className="mt-3 flex items-center justify-center gap-3 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="text-3xl font-bold text-[#D4AF37]">{stats.average}</span>
+              <span className="text-2xl font-bold text-[#D4AF37]">{stats.average}</span>
               <div className="flex">
                 {renderStars(Math.round(stats.average))}
               </div>
@@ -194,48 +206,60 @@ const CustomerReviews = () => {
           </div>
         </div>
 
-        {/* Reviews Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {reviews.length > 0 ? (
-            reviews.slice(0, 6).map((review, index) => (
+        {/* Reviews Display - Smaller Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {getVisibleReviews().length > 0 ? (
+            getVisibleReviews().map((review, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md border border-[#C2E5D8] hover:shadow-lg transition-shadow duration-300"
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="bg-white/80 backdrop-blur-sm p-4 rounded-lg shadow-md border border-[#C2E5D8] hover:shadow-lg transition-shadow duration-300"
               >
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-1">
                   <div>
-                    <h4 className="font-['Tenor_Sans'] text-lg text-[#333]">{review.name}</h4>
-                    <div className="flex mt-1">
+                    <h4 className="font-['Tenor_Sans'] text-base text-[#333]">{review.name}</h4>
+                    <div className="flex mt-0.5">
                       {renderStars(parseInt(review.rating))}
                     </div>
                   </div>
-                  <span className="text-xs text-[#888] whitespace-nowrap ml-4">
+                  <span className="text-xs text-[#888] whitespace-nowrap ml-3">
                     {review.date || 'Recent'}
                   </span>
                 </div>
-                <p className="text-[#555] text-sm leading-relaxed mt-2">
+                <p className="text-[#555] text-sm leading-relaxed mt-1">
                   "{review.review}"
                 </p>
               </motion.div>
             ))
           ) : (
-            <div className="col-span-2 text-center py-8 text-[#555]">
-              <p>No reviews yet. Be the first to share your experience!</p>
+            <div className="col-span-2 text-center py-6 text-[#555]">
+              <p className="text-sm">No reviews yet. Be the first to share your experience!</p>
             </div>
           )}
         </div>
 
-        {/* Submit Review Form */}
-        <div className="bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-lg border border-[#D4AF37]/30 max-w-2xl mx-auto">
-          <h3 className="font-['Tenor_Sans'] text-2xl text-center text-[#333] mb-6">
+        {/* View More Button */}
+        {reviews.length > 5 && visibleCount < reviews.length && (
+          <div className="text-center mb-8">
+            <button
+              onClick={loadMoreReviews}
+              className="px-6 py-2 text-sm font-['Josefin_Sans'] text-[#D4AF37] border border-[#D4AF37] rounded-full hover:bg-[#D4AF37] hover:text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              View More Reviews ({reviews.length - visibleCount} remaining)
+            </button>
+          </div>
+        )}
+
+        {/* Submit Review Form - Smaller */}
+        <div className="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-xl shadow-lg border border-[#D4AF37]/30 max-w-2xl mx-auto">
+          <h3 className="font-['Tenor_Sans'] text-xl text-center text-[#333] mb-4">
             Share Your Experience
           </h3>
           
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Input */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
@@ -247,7 +271,7 @@ const CustomerReviews = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter your name"
-                className="w-full px-4 py-2 rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
                 required
               />
             </div>
@@ -263,13 +287,13 @@ const CustomerReviews = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
               />
             </div>
 
             {/* Rating Stars */}
             <div>
-              <label className="block text-sm font-medium text-[#555] mb-2">
+              <label className="block text-sm font-medium text-[#555] mb-1">
                 Rating <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-1">
@@ -289,9 +313,9 @@ const CustomerReviews = () => {
                 name="review"
                 value={formData.review}
                 onChange={handleInputChange}
-                rows="4"
+                rows="3"
                 placeholder="Write your review here..."
-                className="w-full px-4 py-2 rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 resize-y"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 resize-y"
                 required
               />
             </div>
@@ -307,16 +331,16 @@ const CustomerReviews = () => {
             <button
               type="submit"
               disabled={submitting}
-              className={`w-full py-3 rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 ${
+              className={`w-full py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 ${
                 submitting 
                   ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/30'
+                  : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#D4AF37]/30'
               }`}
             >
               {submitting ? 'Submitting...' : 'Submit Review'}
             </button>
 
-            <p className="text-xs text-center text-[#888] mt-2">
+            <p className="text-xs text-center text-[#888] mt-1">
               Your review will be published after moderation.
             </p>
           </form>

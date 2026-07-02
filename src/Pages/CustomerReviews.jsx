@@ -113,7 +113,7 @@ const CustomerReviews = () => {
       
       // ✅ Reset form and show success
       setFormData({ name: '', email: '', rating: 0, review: '' });
-      setSubmitMessage('✅ Thank you! Your review has been submitted.');
+      setSubmitMessage('Thank you! We Will publish it After the verification.');
       setSubmitMessageType('success');
       
       setTimeout(() => {

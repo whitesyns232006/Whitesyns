@@ -21,7 +21,7 @@ const CustomerReviews = () => {
   const [submitMessageType, setSubmitMessageType] = useState(''); // 'success' or 'error'
 
   // Google Apps Script URL
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbufiZrYq25-lLcwb3fFnsAt8c-6KNSVRC9mQqpO6cg8HwC2F1rXJ1m4jIE16W9OxY/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-8qdDUcWWwtVjCeiZ3J4mdPW1_NXBf_eKa77fSZxjJ5HEcLXZ8umbZyXN2DziQnzp/exec';
 
   // Fetch reviews on component mount
   useEffect(() => {

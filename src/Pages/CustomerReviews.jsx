@@ -287,7 +287,7 @@ const CustomerReviews = () => {
           fetchReviews();
         }, 2000);
       } else if (result.code === 'NOT_VERIFIED') {
-        setModalMessage('You have not placed order');
+        setModalMessage('You have no review before to edit');
         setModalMessageType('error');
       } else if (result.code === 'NOT_FOUND') {
         setModalMessage(result.error || 'No review found with this email');
@@ -344,7 +344,7 @@ const CustomerReviews = () => {
           fetchReviews();
         }, 2000);
       } else if (result.code === 'NOT_VERIFIED') {
-        setModalMessage('You have not placed order');
+        setModalMessage('You have no review before');
         setModalMessageType('error');
       } else if (result.code === 'NOT_FOUND') {
         setModalMessage(result.error || 'No review found with this email');

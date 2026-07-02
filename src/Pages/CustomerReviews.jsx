@@ -25,7 +25,7 @@ const CustomerReviews = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalMessageType, setModalMessageType] = useState('');
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcUAMOQmjXU8RpZYyYNXSIf-jR9qf8onAMpkjrRc0SSv2LKc1bHkbnMrQoIcCobwXV/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWy74E9wPCRGuHYn0oL5VtnkgLDYbbD2KYpbSWm4LIuOZfJXME7FhhCKZgle3biaz4/exec';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -219,6 +219,9 @@ const CustomerReviews = () => {
         }, 2000);
       } else if (result.code === 'NOT_VERIFIED') {
         setSubmitMessage('You have not placed order');
+        setSubmitMessageType('error');
+      } else if (result.code === 'ORDER_TOO_RECENT') {
+        setSubmitMessage('Only orders placed 7 days ago can give a review on our product');
         setSubmitMessageType('error');
       } else if (result.code === 'ALREADY_SUBMITTED') {
         setSubmitMessage('Only One Review Per Customer');

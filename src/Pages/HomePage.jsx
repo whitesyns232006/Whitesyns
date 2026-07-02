@@ -1,11 +1,12 @@
+// src/Pages/HomePage.jsx
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import CustomerReviews from './CustomerReviews'; // ✅ Import Reviews
 
 const HomePage = () => {
   const navigate = useNavigate();
 
-  // Handle Shop Now button click
   const handleShopNow = () => {
     navigate('/orders');
   };
@@ -13,7 +14,7 @@ const HomePage = () => {
   return (
     <main className="w-full bg-[#F5FFFA] overflow-x-hidden">
       
-      {/* Hero Image - Responsive: Mobile par auto height, Desktop par full width cover */}
+      {/* Hero Image */}
       <div className="w-full overflow-hidden">
         <img 
           src="header.webp" 
@@ -30,7 +31,7 @@ const HomePage = () => {
         </h1>
       </section>
 
-      {/* Product Info - Text left, Image right */}
+      {/* Product Info */}
       <section className="py-24 px-[10%] flex flex-col md:flex-row items-center gap-20 bg-[#F5FFFA]">
         <motion.div 
           initial={{ x: -80, opacity: 0 }}
@@ -64,11 +65,10 @@ const HomePage = () => {
         </motion.div>
       </section>
 
-      {/* Auto Slider Section - Non-selectable images */}
+      {/* Auto Slider */}
       <section className="w-full overflow-hidden py-8 bg-[#F5FFFA] border-y border-[#C2E5D8] select-none">
         <div className="w-full overflow-hidden">
           <div className="flex w-fit animate-[slowScroll_40s_linear_infinite] hover:animation-pause">
-            {/* First set */}
             <div className="flex-none w-75 h-50 mx-4 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 pointer-events-none">
               <img src="c.webp" alt="Whitesyns Product" className="w-full h-full object-cover pointer-events-none select-none" draggable="false" />
             </div>
@@ -81,7 +81,6 @@ const HomePage = () => {
             <div className="flex-none w-75 h-50 mx-4 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 pointer-events-none">
               <img src="f.webp" alt="Whitesyns Product" className="w-full h-full object-cover pointer-events-none select-none" draggable="false" />
             </div>
-            {/* Duplicate set for seamless loop */}
             <div className="flex-none w-75 h-50 mx-4 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 pointer-events-none">
               <img src="c.webp" alt="Whitesyns Product" className="w-full h-full object-cover pointer-events-none select-none" draggable="false" />
             </div>
@@ -107,9 +106,8 @@ const HomePage = () => {
         `}</style>
       </section>
 
-      {/* Offer Section - with tilted discount badge */}
+      {/* Offer Section */}
       <section className="py-24 px-[10%] bg-[#E0F5EE] flex flex-col md:flex-row items-center gap-20 relative overflow-hidden">
-        {/* Background pattern */}
         <div className="absolute top-0 right-0 w-[40%] h-full opacity-30 pointer-events-none bg-[radial-gradient(circle_at_10%_20%,rgba(212,175,55,0.03)_0%,transparent_20%),radial-gradient(circle_at_80%_70%,rgba(212,175,55,0.03)_0%,transparent_20%)]"></div>
 
         <div className="flex-1 flex justify-center relative z-10">
@@ -133,21 +131,13 @@ const HomePage = () => {
             </span>
           </div>
 
-          {/* Shop Now Button - Shiny Premium Silver */}
           <button 
             onClick={handleShopNow}
             className="relative px-10 py-4 rounded-[30px] text-lg font-['Josefin_Sans'] font-medium cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl group overflow-hidden bg-linear-to-r from-[#E8E8E8] via-[#F5F5F5] to-[#D0D0D0] text-[#222] border border-white/30"
           >
-            {/* Shiny overlay effect */}
             <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-            
-            {/* Top highlight line */}
             <span className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-white/80 to-transparent"></span>
-            
-            {/* Bottom shadow line */}
             <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-black/10 to-transparent"></span>
-            
-            {/* Button content */}
             <span className="relative flex items-center gap-3">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -162,6 +152,9 @@ const HomePage = () => {
           </p>
         </div>
       </section>
+
+      {/* ✅ Customer Reviews - Footer ke uper */}
+      <CustomerReviews />
 
       <style>{`
         @keyframes luxuryPulse {

@@ -1,5 +1,5 @@
 // src/Pages/CustomerReviews.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -11,6 +11,10 @@ const CustomerReviews = () => {
   const [visibleCount, setVisibleCount] = useState(5);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
+
+  // ✅ Form visibility state - Hidden by default
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const formRef = useRef(null);
 
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -31,6 +35,59 @@ const CustomerReviews = () => {
     review: ''
   });
   const [hoverRating, setHoverRating] = useState(0);
+
+  // ✅ Click outside handler - Close form when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (formRef.current && !formRef.current.contains(event.target) && isFormOpen) {
+        setIsFormOpen(false);
+        resetForm();
+      }
+    };
+
+    // ✅ ESC key handler
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && isFormOpen) {
+        setIsFormOpen(false);
+        resetForm();
+      }
+    };
+
+    // ✅ Scroll handler - Close form on scroll
+    const handleScroll = () => {
+      if (isFormOpen) {
+        setIsFormOpen(false);
+        resetForm();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscKey);
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscKey);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isFormOpen]);
+
+  const resetForm = () => {
+    setFormData({ name: '', email: '', rating: 0, review: '' });
+    setHoverRating(0);
+    setSubmitMessage('');
+    setSubmitMessageType('');
+  };
+
+  const openForm = () => {
+    setIsFormOpen(true);
+    resetForm();
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    resetForm();
+  };
 
   useEffect(() => {
     fetchReviews();
@@ -269,6 +326,7 @@ const CustomerReviews = () => {
         
         setTimeout(() => {
           fetchReviews();
+          closeForm();
         }, 2000);
       } else {
         setSubmitMessage('❌ ' + result.error);
@@ -469,147 +527,174 @@ const CustomerReviews = () => {
             </div>
           )}
 
-          {/* Submit Review Form */}
-          <div className="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-xl shadow-lg border border-[#D4AF37]/30 max-w-2xl mx-auto">
-            <h3 className="font-['Tenor_Sans'] text-xl text-center text-[#333] mb-4">
-              Share Your Experience
-            </h3>
-            
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[#555] mb-1">
-                  Your Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter your name"
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#555] mb-1">
-                  Email <span className="text-red-500">*</span>
-                  <span className="text-xs text-gray-400 ml-2">(Required to verify your purchase)</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter the email you used for order"
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
-                  required
-                />
-                <p className="text-xs text-gray-400 mt-1">
-                  💡 Only customers who have placed an order can submit a review
-                </p>
-              </div>
-
-              {/* Rating Stars */}
-              <div>
-                <label className="block text-sm font-medium text-[#555] mb-1">
-                  Rating <span className="text-red-500">*</span>
-                </label>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => handleStarClick(star)}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className={`text-xl md:text-2xl transition-all duration-200 cursor-pointer hover:scale-110 ${
-                        star <= (hoverRating || formData.rating) ? 'text-[#D4AF37]' : 'text-gray-300'
-                      }`}
-                      aria-label={`Rate ${star} stars`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-                {formData.rating === 0 && hoverRating === 0 && (
-                  <p className="text-xs text-red-500 mt-1">Please select a rating</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-[#555] mb-1">
-                  Your Review <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="review"
-                  value={formData.review}
-                  onChange={handleInputChange}
-                  rows="3"
-                  placeholder="Write your review here..."
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 resize-y"
-                  required
-                />
-              </div>
-
-              {submitMessage && (
-                <div className={`text-center text-sm p-2 rounded-lg ${
-                  submitMessageType === 'success' 
-                    ? 'text-green-600 bg-green-50 border border-green-200' 
-                    : 'text-red-500 bg-red-50 border border-red-200'
-                }`}>
-                  {submitMessage}
-                </div>
-              )}
-
-              {/* ✅ Buttons Row - Submit + Help */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={`flex-1 py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 ${
-                    submitting 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#D4AF37]/30'
-                  }`}
-                >
-                  {submitting ? 'Submitting...' : 'Submit Review'}
-                </button>
-
-                {/* ✅ Help Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const action = window.confirm(
-                      'Choose an option:\n\n• Click OK to Edit your Review\n• Click Cancel to Delete your Review'
-                    );
-                    if (action) {
-                      openModal('edit');
-                    } else {
-                      openModal('delete');
-                    }
-                  }}
-                  className="px-4 py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium text-[#D4AF37] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300"
-                >
-                  Help
-                </button>
-              </div>
-
-              <p className="text-xs text-center text-[#888] mt-1">
-                ✅ Verified customers get auto-approved. Others need moderation.
-              </p>
-
-              {/* ✅ Policy Link */}
-              <div className="text-center mt-2">
-                <Link 
-                  to="/privacy-policy" 
-                  className="text-xs text-[#D4AF37] hover:underline transition-colors duration-300"
-                >
-                  📖 Learn About Our Reviews Policy
-                </Link>
-              </div>
-            </form>
+          {/* ✅ Write a Review Button - Always Visible */}
+          <div className="text-center mb-6">
+            <button
+              onClick={openForm}
+              className="px-8 py-3 bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white rounded-full font-['Josefin_Sans'] text-base font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#D4AF37]/30"
+            >
+              ✍️ Write a Review
+            </button>
           </div>
+
+          {/* ✅ Review Form - Hidden by Default */}
+          {isFormOpen && (
+            <motion.div
+              ref={formRef}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3 }}
+              className="relative bg-white/95 backdrop-blur-sm p-5 md:p-6 rounded-xl shadow-2xl border border-[#D4AF37]/30 max-w-2xl mx-auto"
+            >
+              {/* Close Button */}
+              <button
+                onClick={closeForm}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl transition-colors duration-200"
+                aria-label="Close review form"
+              >
+                ×
+              </button>
+
+              <h3 className="font-['Tenor_Sans'] text-xl text-center text-[#333] mb-4">
+                Share Your Experience
+              </h3>
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-[#555] mb-1">
+                    Your Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your name"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#555] mb-1">
+                    Email <span className="text-red-500">*</span>
+                    <span className="text-xs text-gray-400 ml-2">(Required to verify your purchase)</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter the email you used for order"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                    required
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    💡 Only customers who have placed an order can submit a review
+                  </p>
+                </div>
+
+                {/* Rating Stars */}
+                <div>
+                  <label className="block text-sm font-medium text-[#555] mb-1">
+                    Rating <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => handleStarClick(star)}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        className={`text-xl md:text-2xl transition-all duration-200 cursor-pointer hover:scale-110 ${
+                          star <= (hoverRating || formData.rating) ? 'text-[#D4AF37]' : 'text-gray-300'
+                        }`}
+                        aria-label={`Rate ${star} stars`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  {formData.rating === 0 && hoverRating === 0 && (
+                    <p className="text-xs text-red-500 mt-1">Please select a rating</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#555] mb-1">
+                    Your Review <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    name="review"
+                    value={formData.review}
+                    onChange={handleInputChange}
+                    rows="3"
+                    placeholder="Write your review here..."
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300 resize-y"
+                    required
+                  />
+                </div>
+
+                {submitMessage && (
+                  <div className={`text-center text-sm p-2 rounded-lg ${
+                    submitMessageType === 'success' 
+                      ? 'text-green-600 bg-green-50 border border-green-200' 
+                      : 'text-red-500 bg-red-50 border border-red-200'
+                  }`}>
+                    {submitMessage}
+                  </div>
+                )}
+
+                {/* Buttons Row */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className={`flex-1 py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 ${
+                      submitting 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#D4AF37]/30'
+                    }`}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const action = window.confirm(
+                        'Choose an option:\n\n• Click OK to Edit your Review\n• Click Cancel to Delete your Review'
+                      );
+                      if (action) {
+                        openModal('edit');
+                      } else {
+                        openModal('delete');
+                      }
+                    }}
+                    className="px-4 py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium text-[#D4AF37] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300"
+                  >
+                    Help
+                  </button>
+                </div>
+
+                <p className="text-xs text-center text-[#888] mt-1">
+                  ✅ Verified customers get auto-approved. Others need moderation.
+                </p>
+
+                {/* Policy Link */}
+                <div className="text-center mt-2">
+                  <Link 
+                    to="/privacy-policy" 
+                    className="text-xs text-[#D4AF37] hover:underline transition-colors duration-300"
+                  >
+                    📖 Learn About Our Reviews Policy
+                  </Link>
+                </div>
+              </form>
+            </motion.div>
+          )}
         </div>
       </motion.section>
 

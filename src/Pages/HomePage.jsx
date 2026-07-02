@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import CustomerReviews from './CustomerReviews'; // ✅ Import Reviews
+import CustomerReviews from './CustomerReviews';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="w-full bg-[#F5FFFA] overflow-x-hidden">
+    <main className="w-full bg-[#F5FFFA] overflow-x-hidden overflow-y-visible">
       
       {/* Hero Image */}
       <div className="w-full overflow-hidden">
@@ -153,7 +153,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ✅ Customer Reviews - Footer ke uper */}
+      {/* Customer Reviews */}
       <CustomerReviews />
 
       <style>{`

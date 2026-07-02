@@ -1,8 +1,9 @@
+// src/Pages/TermsOfService.jsx
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const TermsOfService = () => {
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -41,6 +42,9 @@ const TermsOfService = () => {
 
         {/* Terms Content */}
         <div className="space-y-6 relative z-10">
+          {/* ============================================
+              EXISTING TERMS (1-9)
+          ============================================ */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -164,6 +168,139 @@ const TermsOfService = () => {
               For any other queries, reach us through our email: <a href="mailto:whitesyns232006@gmail.com" className="text-[#C0A020] font-bold hover:underline transition-colors duration-300">whitesyns232006@gmail.com</a>.
             </p>
           </motion.div>
+
+          {/* ============================================
+              🆕 REVIEWS POLICY SECTION
+          ============================================ */}
+          
+          {/* Divider with label */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#C0A020]/20"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white/85 px-6 text-[#C0A020] font-['Tenor_Sans'] text-lg tracking-wider">
+                ⭐ Customer Reviews Policy
+              </span>
+            </div>
+          </div>
+
+          {/* Review Policy Points */}
+          <div className="space-y-5 bg-[#FDFBF7] p-6 md:p-8 rounded-xl border border-[#C0A020]/10">
+            <h3 className="font-['Tenor_Sans'] text-xl md:text-2xl text-[#333] text-center mb-4">
+              How Our Review System Works
+            </h3>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.5 }}
+              className="flex items-start gap-3"
+            >
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">📝</span>
+              <div>
+                <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
+                  <span className="font-bold text-[#C0A020]">Submit a Review:</span> Only customers who have placed a valid order can submit a review. You must use the same email address that was used for your order to verify your purchase.
+                </p>
+                <p className="font-['Tenor_Sans'] text-sm text-[#666] mt-1">
+                  ✅ Each customer is allowed to submit only one review per product.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.55 }}
+              className="flex items-start gap-3"
+            >
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">✏️</span>
+              <div>
+                <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
+                  <span className="font-bold text-[#C0A020]">Edit Your Review:</span> If you need to update your review, click the "Help" button and select "Edit Your Review". Enter the email address you used for your original review, make your changes, and submit.
+                </p>
+                <p className="font-['Tenor_Sans'] text-sm text-[#666] mt-1">
+                  ⚠️ Your review will only be updated if the email matches our records.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
+              className="flex items-start gap-3"
+            >
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">🗑️</span>
+              <div>
+                <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
+                  <span className="font-bold text-[#C0A020]">Delete Your Review:</span> To permanently remove your review, click the "Help" button and select "Delete Your Review". Enter the email address used for your original review.
+                </p>
+                <p className="font-['Tenor_Sans'] text-sm text-red-600 mt-1">
+                  ⚠️ This action cannot be undone. Your review will be permanently removed from our website.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.65 }}
+              className="flex items-start gap-3"
+            >
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">🚫</span>
+              <div>
+                <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
+                  <span className="font-bold text-[#C0A020]">Duplicate Reviews:</span> Each customer is allowed to submit only one review. If you have already submitted a review, the system will not allow you to submit another one. You can edit or delete your existing review instead.
+                </p>
+                <p className="font-['Tenor_Sans'] text-sm text-[#666] mt-1">
+                  💡 If you need to make changes, use the "Help" button to edit your existing review.
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.7 }}
+              className="flex items-start gap-3"
+            >
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">✅</span>
+              <div>
+                <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
+                  <span className="font-bold text-[#C0A020]">Verification & Approval:</span> All reviews are verified against our orders database. Verified reviews are automatically approved and displayed with a "Verified Purchase" badge.
+                </p>
+                <p className="font-['Tenor_Sans'] text-sm text-[#666] mt-1">
+                  ⏳ Non-verified reviews may be held for moderation. Only genuine customer experiences are published.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Quick Summary Box */}
+          <div className="bg-gradient-to-r from-[#C0A020]/5 to-[#D4AF37]/5 p-4 md:p-6 rounded-xl border border-[#C0A020]/20 mt-4">
+            <h4 className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] text-center mb-3">
+              📌 Quick Summary
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm md:text-base">
+              <div className="flex items-center gap-2">
+                <span className="text-green-600">✅</span>
+                <span className="text-[#555]">One review per customer</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-blue-600">✏️</span>
+                <span className="text-[#555]">Edit anytime with email</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-red-600">🗑️</span>
+                <span className="text-[#555]">Delete permanently with email</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[#D4AF37]">⭐</span>
+                <span className="text-[#555]">Verified badge for real customers</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Decorative divider */}
@@ -175,15 +312,15 @@ const TermsOfService = () => {
 
         {/* Back button */}
         <div className="text-center">
-          <a 
-            href="/" 
+          <Link 
+            to="/" 
             className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#C0A020] to-[#D4AF37] text-white rounded-full font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-[#C0A020]/40 hover:scale-[1.02] active:scale-[0.98]"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
 

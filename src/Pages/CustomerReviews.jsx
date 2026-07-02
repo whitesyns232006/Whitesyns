@@ -53,22 +53,15 @@ const CustomerReviews = () => {
       }
     };
 
-    // ✅ Scroll handler - Close form on scroll
-    const handleScroll = () => {
-      if (isFormOpen) {
-        setIsFormOpen(false);
-        resetForm();
-      }
-    };
+    // ❌ SCROLL handler REMOVED - Form will NOT close on scroll
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscKey);
-    window.addEventListener('scroll', handleScroll);
+    // document.removeEventListener('scroll', handleScroll); // REMOVED
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscKey);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, [isFormOpen]);
 

@@ -50,7 +50,7 @@ const ShopNowModal = () => {
                  <span className="font-bold text-[#D4AF37]">Whitesyns</span>
               </p>
               <p className="text-[10px] md:text-xs text-[#666] truncate">
-                Natural Teeth WhiteningNatural Herbal Teeth Whitening Care
+                Natural Herbal Teeth Whitening Care
               </p>
             </div>
 

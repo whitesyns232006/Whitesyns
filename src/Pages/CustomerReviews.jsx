@@ -11,24 +11,21 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-  // ✅ Updated Google Apps Script URL
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcxK6mCJD-_MN6CUI5bwabrz9rtxhR0vM1ntSmJANV4iHVbTDZ/exec';
 
-  // Form state - ✅ Default rating is 0 (no stars selected)
+  // ✅ Form state - rating 0 by default
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    rating: 0, // ✅ Default 0 - No stars selected
+    rating: 0,
     review: ''
   });
   const [hoverRating, setHoverRating] = useState(0);
 
-  // Fetch reviews on mount
   useEffect(() => {
     fetchReviews();
   }, []);
 
-  // Fetch reviews from Google Sheets
   const fetchReviews = async () => {
     try {
       setLoading(true);
@@ -38,8 +35,6 @@ const CustomerReviews = () => {
       if (Array.isArray(data)) {
         setReviews(data);
         calculateStats(data);
-      } else if (data.error) {
-        console.error('Error fetching reviews:', data.error);
       }
     } catch (error) {
       console.error('Failed to fetch reviews:', error);
@@ -48,7 +43,6 @@ const CustomerReviews = () => {
     }
   };
 
-  // Calculate average rating and total
   const calculateStats = (reviewsData) => {
     if (reviewsData.length === 0) {
       setStats({ average: 0, total: 0 });
@@ -62,25 +56,21 @@ const CustomerReviews = () => {
     setStats({ average, total });
   };
 
-  // Handle star click
   const handleStarClick = (rating) => {
     setFormData(prev => ({ ...prev, rating }));
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Submit review with proper response handling
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     setSubmitMessage('');
     setSubmitMessageType('');
     
-    // Validation
     if (!formData.name.trim()) {
       setSubmitMessage('Please enter your name');
       setSubmitMessageType('error');
@@ -119,22 +109,18 @@ const CustomerReviews = () => {
         })
       });
       
-      // ✅ Read the response
       const result = await response.json();
       
       if (result.success) {
-        // ✅ Success - Verified customer
         setFormData({ name: '', email: '', rating: 0, review: '' });
         setSubmitMessage('✅ ' + result.message);
         setSubmitMessageType('success');
         
-        // Refresh reviews after 2 seconds
         setTimeout(() => {
           fetchReviews();
         }, 2000);
         
       } else {
-        // ❌ Error - Not verified or other issue
         setSubmitMessage('❌ ' + result.error);
         setSubmitMessageType('error');
       }
@@ -148,14 +134,20 @@ const CustomerReviews = () => {
     }
   };
 
-  // ✅ Render stars - No pre-selected stars
+  // ✅ FIXED: Render stars function
   const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, showVerified = false) => {
     const stars = [];
     const maxRating = 5;
     
-    // ✅ For interactive: use hoverRating or rating (which is 0 by default)
-    // ✅ For display: use the passed rating
-    const currentRating = interactive ? (hoverRating || rating) : rating;
+    // ✅ CRITICAL FIX: For interactive, use hoverRating OR rating
+    // For display, use the passed rating
+    let currentRating;
+    if (interactive) {
+      // If hovering, show hoverRating, otherwise show selected rating
+      currentRating = hoverRating > 0 ? hoverRating : rating;
+    } else {
+      currentRating = rating;
+    }
     
     for (let i = 1; i <= maxRating; i++) {
       stars.push(
@@ -187,17 +179,14 @@ const CustomerReviews = () => {
     return stars;
   };
 
-  // Load more reviews
   const loadMoreReviews = () => {
     setVisibleCount(prev => prev + 5);
   };
 
-  // Get visible reviews
   const getVisibleReviews = () => {
     return reviews.slice(0, visibleCount);
   };
 
-  // Loading state
   if (loading) {
     return (
       <section className="py-12 px-[5%] md:px-[10%] bg-[#F5FFFA] border-y border-[#C2E5D8]">
@@ -300,7 +289,6 @@ const CustomerReviews = () => {
           </h3>
           
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Input */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Your Name <span className="text-red-500">*</span>
@@ -316,7 +304,6 @@ const CustomerReviews = () => {
               />
             </div>
 
-            {/* Email Input */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Email <span className="text-red-500">*</span>
@@ -336,20 +323,33 @@ const CustomerReviews = () => {
               </p>
             </div>
 
-            {/* ✅ Rating Stars - No pre-selected stars */}
+            {/* ✅ Rating Stars - FIXED */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Rating <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-1">
-                {renderStars(5, true, handleStarClick, setHoverRating)}
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => handleStarClick(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    className={`text-xl md:text-2xl transition-all duration-200 cursor-pointer hover:scale-110 ${
+                      star <= (hoverRating || formData.rating) ? 'text-[#D4AF37]' : 'text-gray-300'
+                    }`}
+                    aria-label={`Rate ${star} stars`}
+                  >
+                    ★
+                  </button>
+                ))}
               </div>
               {formData.rating === 0 && hoverRating === 0 && (
                 <p className="text-xs text-red-500 mt-1">Please select a rating</p>
               )}
             </div>
 
-            {/* Review Text */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Your Review <span className="text-red-500">*</span>
@@ -365,7 +365,6 @@ const CustomerReviews = () => {
               />
             </div>
 
-            {/* Submit Message */}
             {submitMessage && (
               <div className={`text-center text-sm p-2 rounded-lg ${
                 submitMessageType === 'success' 
@@ -376,7 +375,6 @@ const CustomerReviews = () => {
               </div>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={submitting}

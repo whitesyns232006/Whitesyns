@@ -1,13 +1,14 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ShopNowModal from './components/ShopNowModal';
 import Home from './Pages/HomePage';
 import AboutUs from './Pages/AboutUs';
 import FAQs from './Pages/FAQs';
-import TermsOfService from './Pages/TermsOfService'; // ✅ Yeh import hona chahiye
+import TermsOfService from './Pages/TermsOfService';
 import OrderForm from './Pages/OrderForm';
 import OrderConfirmation from './Pages/OrderConfirmation';
 
@@ -36,7 +37,6 @@ function App() {
   return (
     <HelmetProvider>
       <div className="flex flex-col min-h-screen">
-        {/* Default Helmet for all pages */}
         <Helmet>
           <title>Whitesyns Pakistan</title>
           <meta name="description" content="Whitesyns - Pakistan's first edible teeth-whitening solution" />
@@ -76,7 +76,7 @@ function App() {
                 <Helmet>
                   <title>Terms of Service - Whitesyns Pakistan</title>
                 </Helmet>
-                <TermsOfService /> {/* ✅ Yeh component render hona chahiye */}
+                <TermsOfService />
               </RouteWrapper>
             } />
             <Route path="/orders" element={
@@ -103,10 +103,14 @@ function App() {
                 <Home />
               </RouteWrapper>
             } />
+            <Route path="/TermsOfService" element={<Navigate to="/terms" replace />} />
           </Routes>
         </main>
         
         <Footer />
+        
+        {/* ✅ ShopNowModal - Appears on all pages except orders/confirmation */}
+        <ShopNowModal />
       </div>
     </HelmetProvider>
   );

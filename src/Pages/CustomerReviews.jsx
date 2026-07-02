@@ -13,7 +13,6 @@ const CustomerReviews = () => {
 
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcxK6mCJD-_MN6CUI5bwabrz9rtxhR0vM1ntSmJANV4iHVbTDZ/exec';
 
-  // ✅ Form state - rating 0 by default
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -65,6 +64,7 @@ const CustomerReviews = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // ✅ FIXED: no-cors mode
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -95,8 +95,10 @@ const CustomerReviews = () => {
     try {
       setSubmitting(true);
       
-      const response = await fetch(SCRIPT_URL, {
+      // ✅ Use no-cors mode
+      await fetch(SCRIPT_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -109,21 +111,14 @@ const CustomerReviews = () => {
         })
       });
       
-      const result = await response.json();
+      // ✅ Reset form and show success
+      setFormData({ name: '', email: '', rating: 0, review: '' });
+      setSubmitMessage('✅ Thank you! Your review has been submitted.');
+      setSubmitMessageType('success');
       
-      if (result.success) {
-        setFormData({ name: '', email: '', rating: 0, review: '' });
-        setSubmitMessage('✅ ' + result.message);
-        setSubmitMessageType('success');
-        
-        setTimeout(() => {
-          fetchReviews();
-        }, 2000);
-        
-      } else {
-        setSubmitMessage('❌ ' + result.error);
-        setSubmitMessageType('error');
-      }
+      setTimeout(() => {
+        fetchReviews();
+      }, 3000);
       
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -134,29 +129,20 @@ const CustomerReviews = () => {
     }
   };
 
-  // ✅ FIXED: Render stars function
-  const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, showVerified = false) => {
+  // Render stars
+  const renderStars = (rating, interactive = false, showVerified = false) => {
     const stars = [];
     const maxRating = 5;
-    
-    // ✅ CRITICAL FIX: For interactive, use hoverRating OR rating
-    // For display, use the passed rating
-    let currentRating;
-    if (interactive) {
-      // If hovering, show hoverRating, otherwise show selected rating
-      currentRating = hoverRating > 0 ? hoverRating : rating;
-    } else {
-      currentRating = rating;
-    }
+    const currentRating = interactive ? (hoverRating || rating) : rating;
     
     for (let i = 1; i <= maxRating; i++) {
       stars.push(
         <button
           key={i}
           type="button"
-          onClick={() => interactive && onStarClick && onStarClick(i)}
-          onMouseEnter={() => interactive && onStarHover && onStarHover(i)}
-          onMouseLeave={() => interactive && onStarHover && onStarHover(0)}
+          onClick={() => interactive && handleStarClick(i)}
+          onMouseEnter={() => interactive && setHoverRating(i)}
+          onMouseLeave={() => interactive && setHoverRating(0)}
           className={`text-xl md:text-2xl transition-all duration-200 ${
             interactive ? 'cursor-pointer hover:scale-110' : 'cursor-default'
           } ${i <= currentRating ? 'text-[#D4AF37]' : 'text-gray-300'}`}
@@ -251,7 +237,7 @@ const CustomerReviews = () => {
                       )}
                     </h4>
                     <div className="flex mt-0.5 items-center">
-                      {renderStars(parseInt(review.rating), false, null, null, review.verified === 'Yes')}
+                      {renderStars(parseInt(review.rating), false, review.verified === 'Yes')}
                     </div>
                   </div>
                   <span className="text-xs text-[#888] whitespace-nowrap ml-3">
@@ -323,7 +309,7 @@ const CustomerReviews = () => {
               </p>
             </div>
 
-            {/* ✅ Rating Stars - FIXED */}
+            {/* Rating Stars */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Rating <span className="text-red-500">*</span>

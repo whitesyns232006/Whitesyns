@@ -11,10 +11,8 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-  // Updated Google Apps Script URL
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-8qdDUcWWwtVjCeiZ3J4mdPW1_NXBf_eKa77fSZxjJ5HEcLXZ8umbZyXN2DziQnzp/exec';
 
-  // Form state
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,12 +21,10 @@ const CustomerReviews = () => {
   });
   const [hoverRating, setHoverRating] = useState(0);
 
-  // Fetch reviews on mount
   useEffect(() => {
     fetchReviews();
   }, []);
 
-  // Fetch reviews from Google Sheets
   const fetchReviews = async () => {
     try {
       setLoading(true);
@@ -38,8 +34,6 @@ const CustomerReviews = () => {
       if (Array.isArray(data)) {
         setReviews(data);
         calculateStats(data);
-      } else if (data.error) {
-        console.error('Error fetching reviews:', data.error);
       }
     } catch (error) {
       console.error('Failed to fetch reviews:', error);
@@ -48,7 +42,6 @@ const CustomerReviews = () => {
     }
   };
 
-  // Calculate average rating and total
   const calculateStats = (reviewsData) => {
     if (reviewsData.length === 0) {
       setStats({ average: 0, total: 0 });
@@ -62,18 +55,16 @@ const CustomerReviews = () => {
     setStats({ average, total });
   };
 
-  // Handle star click
   const handleStarClick = (rating) => {
     setFormData(prev => ({ ...prev, rating }));
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Submit review
+  // ✅ UPDATED: Submit review with proper response handling
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -105,9 +96,9 @@ const CustomerReviews = () => {
     try {
       setSubmitting(true);
       
+      // ✅ Use POST with proper response handling
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -120,19 +111,29 @@ const CustomerReviews = () => {
         })
       });
       
-      // Reset form
-      setFormData({ name: '', email: '', rating: 0, review: '' });
-      setSubmitMessage('✅ Thank you! Your verified review has been published.');
-      setSubmitMessageType('success');
+      // ✅ Read the response
+      const result = await response.json();
       
-      // Refresh reviews after 2 seconds
-      setTimeout(() => {
-        fetchReviews();
-      }, 2000);
+      if (result.success) {
+        // ✅ Success - Verified customer
+        setFormData({ name: '', email: '', rating: 0, review: '' });
+        setSubmitMessage('✅ ' + result.message);
+        setSubmitMessageType('success');
+        
+        // Refresh reviews after 2 seconds
+        setTimeout(() => {
+          fetchReviews();
+        }, 2000);
+        
+      } else {
+        // ❌ Error - Not verified or other issue
+        setSubmitMessage('❌ ' + result.error);
+        setSubmitMessageType('error');
+      }
       
     } catch (error) {
       console.error('Error submitting review:', error);
-      setSubmitMessage('❌ Failed to submit review. Please try again.');
+      setSubmitMessage('❌ Network error. Please try again.');
       setSubmitMessageType('error');
     } finally {
       setSubmitting(false);
@@ -175,17 +176,14 @@ const CustomerReviews = () => {
     return stars;
   };
 
-  // Load more reviews
   const loadMoreReviews = () => {
     setVisibleCount(prev => prev + 5);
   };
 
-  // Get visible reviews
   const getVisibleReviews = () => {
     return reviews.slice(0, visibleCount);
   };
 
-  // Loading state
   if (loading) {
     return (
       <section className="py-12 px-[5%] md:px-[10%] bg-[#F5FFFA] border-y border-[#C2E5D8]">
@@ -243,7 +241,6 @@ const CustomerReviews = () => {
                   <div>
                     <h4 className="font-['Tenor_Sans'] text-base text-[#333] flex items-center gap-2 flex-wrap">
                       {review.name}
-                      {/* Verified badge */}
                       {review.verified === 'Yes' && (
                         <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
                           ✅ Verified

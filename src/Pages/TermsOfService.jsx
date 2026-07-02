@@ -197,7 +197,7 @@ const TermsOfService = () => {
               transition={{ duration: 0.3, delay: 0.5 }}
               className="flex items-start gap-3"
             >
-              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">📝</span>
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">⭐</span>
               <div>
                 <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
                   <span className="font-bold text-[#C0A020]">Submit a Review:</span> Only customers who have placed a valid order can submit a review. You must use the same email address that was used for your order to verify your purchase.
@@ -214,7 +214,7 @@ const TermsOfService = () => {
               transition={{ duration: 0.3, delay: 0.55 }}
               className="flex items-start gap-3"
             >
-              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">✏️</span>
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">⭐</span>
               <div>
                 <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
                   <span className="font-bold text-[#C0A020]">Edit Your Review:</span> If you need to update your review, click the "Help" button and select "Edit Your Review". Enter the email address you used for your original review, make your changes, and submit.
@@ -231,7 +231,7 @@ const TermsOfService = () => {
               transition={{ duration: 0.3, delay: 0.6 }}
               className="flex items-start gap-3"
             >
-              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">🗑️</span>
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">⭐</span>
               <div>
                 <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
                   <span className="font-bold text-[#C0A020]">Delete Your Review:</span> To permanently remove your review, click the "Help" button and select "Delete Your Review". Enter the email address used for your original review.
@@ -248,7 +248,7 @@ const TermsOfService = () => {
               transition={{ duration: 0.3, delay: 0.65 }}
               className="flex items-start gap-3"
             >
-              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">🚫</span>
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">⭐</span>
               <div>
                 <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
                   <span className="font-bold text-[#C0A020]">Duplicate Reviews:</span> Each customer is allowed to submit only one review. If you have already submitted a review, the system will not allow you to submit another one. You can edit or delete your existing review instead.
@@ -265,7 +265,7 @@ const TermsOfService = () => {
               transition={{ duration: 0.3, delay: 0.7 }}
               className="flex items-start gap-3"
             >
-              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">✅</span>
+              <span className="text-[#C0A020] text-xl font-bold min-w-[24px]">⭐</span>
               <div>
                 <p className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] leading-[1.8]">
                   <span className="font-bold text-[#C0A020]">Verification & Approval:</span> All reviews are verified against our orders database. Verified reviews are automatically approved and displayed with a "Verified Purchase" badge.
@@ -280,7 +280,7 @@ const TermsOfService = () => {
           {/* Quick Summary Box */}
           <div className="bg-gradient-to-r from-[#C0A020]/5 to-[#D4AF37]/5 p-4 md:p-6 rounded-xl border border-[#C0A020]/20 mt-4">
             <h4 className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] text-center mb-3">
-              📌 Quick Summary
+              ⭐ Quick Summary
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm md:text-base">
               <div className="flex items-center gap-2">

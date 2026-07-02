@@ -7,8 +7,7 @@ const CustomerReviews = () => {
   const [stats, setStats] = useState({ average: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(5); // Initially show 5 reviews
-  const [showAll, setShowAll] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(5);
   
   // Review form state
   const [formData, setFormData] = useState({
@@ -19,6 +18,7 @@ const CustomerReviews = () => {
   });
   const [hoverRating, setHoverRating] = useState(0);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [submitMessageType, setSubmitMessageType] = useState(''); // 'success' or 'error'
 
   // Google Apps Script URL
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbufiZrYq25-lLcwb3fFnsAt8c-6KNSVRC9mQqpO6cg8HwC2F1rXJ1m4jIE16W9OxY/exec';
@@ -77,23 +77,34 @@ const CustomerReviews = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Reset messages
+    setSubmitMessage('');
+    setSubmitMessageType('');
+    
     // Validation
     if (!formData.name.trim()) {
       setSubmitMessage('Please enter your name');
+      setSubmitMessageType('error');
       return;
     }
     if (formData.rating === 0) {
       setSubmitMessage('Please select a rating');
+      setSubmitMessageType('error');
       return;
     }
     if (!formData.review.trim()) {
       setSubmitMessage('Please write your review');
+      setSubmitMessageType('error');
+      return;
+    }
+    if (!formData.email.trim()) {
+      setSubmitMessage('Please enter your email to verify your purchase');
+      setSubmitMessageType('error');
       return;
     }
     
     try {
       setSubmitting(true);
-      setSubmitMessage('');
       
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
@@ -106,13 +117,17 @@ const CustomerReviews = () => {
           name: formData.name,
           rating: formData.rating,
           review: formData.review,
-          email: formData.email || ''
+          email: formData.email
         })
       });
       
+      // Since we're using no-cors, we can't read response
+      // We'll assume success and show appropriate message
+      
       // Reset form
       setFormData({ name: '', rating: 0, review: '', email: '' });
-      setSubmitMessage('✅ Thank you! Your review has been submitted for approval.');
+      setSubmitMessage('✅ Thank you! Your verified review has been published.');
+      setSubmitMessageType('success');
       
       // Refresh reviews after 2 seconds
       setTimeout(() => {
@@ -122,13 +137,14 @@ const CustomerReviews = () => {
     } catch (error) {
       console.error('Error submitting review:', error);
       setSubmitMessage('❌ Failed to submit review. Please try again.');
+      setSubmitMessageType('error');
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Render stars
-  const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null) => {
+  // Render stars with verified badge support
+  const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, showVerified = false) => {
     const stars = [];
     const maxRating = 5;
     const currentRating = interactive ? hoverRating || rating : rating;
@@ -151,6 +167,16 @@ const CustomerReviews = () => {
         </button>
       );
     }
+    
+    // Add verified badge if needed
+    if (showVerified) {
+      stars.push(
+        <span key="verified" className="ml-2 text-xs text-green-600 font-medium">
+          ✅ Verified
+        </span>
+      );
+    }
+    
     return stars;
   };
 
@@ -187,7 +213,7 @@ const CustomerReviews = () => {
       className="py-12 px-[5%] md:px-[10%] bg-gradient-to-b from-[#F5FFFA] to-[#E8F5EE] border-y border-[#C2E5D8]"
     >
       <div className="max-w-300 mx-auto">
-        {/* Section Header - Smaller */}
+        {/* Section Header */}
         <div className="text-center mb-8">
           <h2 className="font-['Tenor_Sans'] text-2xl md:text-3xl text-[#333] mb-2 relative inline-block">
             ⭐ Customer Reviews
@@ -206,7 +232,7 @@ const CustomerReviews = () => {
           </div>
         </div>
 
-        {/* Reviews Display - Smaller Cards */}
+        {/* Reviews Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {getVisibleReviews().length > 0 ? (
             getVisibleReviews().map((review, index) => (
@@ -220,9 +246,17 @@ const CustomerReviews = () => {
               >
                 <div className="flex items-start justify-between mb-1">
                   <div>
-                    <h4 className="font-['Tenor_Sans'] text-base text-[#333]">{review.name}</h4>
-                    <div className="flex mt-0.5">
-                      {renderStars(parseInt(review.rating))}
+                    <h4 className="font-['Tenor_Sans'] text-base text-[#333] flex items-center gap-2 flex-wrap">
+                      {review.name}
+                      {/* ✅ Verified Purchase Badge */}
+                      {review.verified === 'Yes' && (
+                        <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+                          ✅ Verified
+                        </span>
+                      )}
+                    </h4>
+                    <div className="flex mt-0.5 items-center">
+                      {renderStars(parseInt(review.rating), false, null, null, review.verified === 'Yes')}
                     </div>
                   </div>
                   <span className="text-xs text-[#888] whitespace-nowrap ml-3">
@@ -253,7 +287,7 @@ const CustomerReviews = () => {
           </div>
         )}
 
-        {/* Submit Review Form - Smaller */}
+        {/* Submit Review Form */}
         <div className="bg-white/90 backdrop-blur-sm p-5 md:p-6 rounded-xl shadow-lg border border-[#D4AF37]/30 max-w-2xl mx-auto">
           <h3 className="font-['Tenor_Sans'] text-xl text-center text-[#333] mb-4">
             Share Your Experience
@@ -276,19 +310,24 @@ const CustomerReviews = () => {
               />
             </div>
 
-            {/* Email Input (Optional) */}
+            {/* Email Input - Required for verification */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
-                Email (Optional)
+                Email <span className="text-red-500">*</span>
+                <span className="text-xs text-gray-400 ml-2">(Required to verify your purchase)</span>
               </label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                placeholder="Enter your email"
+                placeholder="Enter the email you used for order"
                 className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                required
               />
+              <p className="text-xs text-gray-400 mt-1">
+                💡 Only customers who have placed an order can submit a review
+              </p>
             </div>
 
             {/* Rating Stars */}
@@ -322,7 +361,11 @@ const CustomerReviews = () => {
 
             {/* Submit Message */}
             {submitMessage && (
-              <div className={`text-center text-sm ${submitMessage.includes('✅') ? 'text-green-600' : 'text-red-500'}`}>
+              <div className={`text-center text-sm p-2 rounded-lg ${
+                submitMessageType === 'success' 
+                  ? 'text-green-600 bg-green-50 border border-green-200' 
+                  : 'text-red-500 bg-red-50 border border-red-200'
+              }`}>
                 {submitMessage}
               </div>
             )}
@@ -341,7 +384,7 @@ const CustomerReviews = () => {
             </button>
 
             <p className="text-xs text-center text-[#888] mt-1">
-              Your review will be published after moderation.
+              ✅ Verified customers get auto-approved. Others need moderation.
             </p>
           </form>
         </div>

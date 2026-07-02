@@ -11,8 +11,7 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-8qdDUcWWwtVjCeiZ3J4mdPW1_NXBf_eKa77fSZxjJ5HEcLXZ8umbZyXN2DziQnzp/exec';
-
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcxK6mCJD-_MN6CUI5bwabrz9rtxhR0vM1ntSmJANV4iHVbTDZ/exec';
   const [formData, setFormData] = useState({
     name: '',
     email: '',

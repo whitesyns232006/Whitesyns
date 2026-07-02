@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import Home from './Pages/HomePage';
 import AboutUs from './Pages/AboutUs';
 import FAQs from './Pages/FAQs';
-import TermsOfService from './Pages/TermsOfService';
+import TermsOfService from './Pages/TermsOfService'; // ✅ Yeh import hona chahiye
 import OrderForm from './Pages/OrderForm';
 import OrderConfirmation from './Pages/OrderConfirmation';
 
@@ -76,7 +76,7 @@ function App() {
                 <Helmet>
                   <title>Terms of Service - Whitesyns Pakistan</title>
                 </Helmet>
-                <TermsOfService />
+                <TermsOfService /> {/* ✅ Yeh component render hona chahiye */}
               </RouteWrapper>
             } />
             <Route path="/orders" element={

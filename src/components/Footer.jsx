@@ -152,6 +152,9 @@ const Footer = () => {
       <div className="text-center pt-4 mt-4 border-t border-[#C2E5D8] text-sm md:text-base text-[#555] tracking-wide">
         ©2025 whitesyns
       </div>
+
+      {/* ✅ Extra Space for Sticky Modal - Footer ke neeche extra height */}
+      <div className="h-20 md:h-24 lg:h-28"></div>
     </footer>
   );
 };

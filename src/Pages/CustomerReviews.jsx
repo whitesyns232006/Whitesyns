@@ -25,7 +25,7 @@ const CustomerReviews = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalMessageType, setModalMessageType] = useState('');
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFipcvFHUoQxu6XKoMckJrg7SkszV_T5WcjDPNqtvgRS56eCwq6yajBX1QS1r889NP/exec';
+  const SCRIPT_URL = 'https://script.google.com/maycbyUSoAVfhGUj3h7EOpmvZJMazgDNeNJxjBkTjMjgZG8kgM_mKjad9fswf42ibtyWfbc/exec';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -210,7 +210,7 @@ const CustomerReviews = () => {
 
       if (result.success) {
         setFormData({ name: '', email: '', rating: 0, review: '' });
-        setSubmitMessage('You Review Published');
+        setSubmitMessage('Review Published Successfully');
         setSubmitMessageType('success');
 
         setTimeout(() => {
@@ -218,10 +218,13 @@ const CustomerReviews = () => {
           closeForm();
         }, 2000);
       } else if (result.code === 'NOT_VERIFIED') {
-        setSubmitMessage('You Have Not Placed Order Yet');
+        setSubmitMessage('You have not placed order');
+        setSubmitMessageType('error');
+      } else if (result.code === 'ALREADY_SUBMITTED') {
+        setSubmitMessage('Only One Review Per Customer');
         setSubmitMessageType('error');
       } else {
-        setSubmitMessage(result.error || '❌ Something went wrong. Please try again.');
+        setSubmitMessage(result.error || 'Something went wrong. Please try again.');
         setSubmitMessageType('error');
       }
 
@@ -257,12 +260,13 @@ const CustomerReviews = () => {
 
     try {
       setSubmitting(true);
-      
-      await fetch(SCRIPT_URL, {
+
+      // ✅ Real request (no 'no-cors') so we can actually read the server's response
+      // and show the correct validation message (email not verified / no review found / etc).
+      const response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify({
           action: 'editReview',
@@ -271,15 +275,28 @@ const CustomerReviews = () => {
           rating: modalRating
         })
       });
-      
-      setModalMessage('✅ Your review has been updated!');
-      setModalMessageType('success');
-      
-      setTimeout(() => {
-        closeModal();
-        fetchReviews();
-      }, 2000);
-      
+
+      const result = await response.json();
+
+      if (result.success) {
+        setModalMessage('Review Updated Successfully');
+        setModalMessageType('success');
+
+        setTimeout(() => {
+          closeModal();
+          fetchReviews();
+        }, 2000);
+      } else if (result.code === 'NOT_VERIFIED') {
+        setModalMessage('You have not placed order');
+        setModalMessageType('error');
+      } else if (result.code === 'NOT_FOUND') {
+        setModalMessage(result.error || 'No review found with this email');
+        setModalMessageType('error');
+      } else {
+        setModalMessage(result.error || 'Something went wrong. Please try again.');
+        setModalMessageType('error');
+      }
+
     } catch (error) {
       console.error('Error editing review:', error);
       setModalMessage('❌ Network error. Please try again.');
@@ -302,27 +319,41 @@ const CustomerReviews = () => {
 
     try {
       setSubmitting(true);
-      
-      await fetch(SCRIPT_URL, {
+
+      // ✅ Real request (no 'no-cors') so we can actually read the server's response
+      // and show the correct validation message (email not verified / no review found / etc).
+      const response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify({
           action: 'deleteReview',
           email: modalEmail
         })
       });
-      
-      setModalMessage('✅ Your review has been deleted!');
-      setModalMessageType('success');
-      
-      setTimeout(() => {
-        closeModal();
-        fetchReviews();
-      }, 2000);
-      
+
+      const result = await response.json();
+
+      if (result.success) {
+        setModalMessage('Review Deleted Successfully');
+        setModalMessageType('success');
+
+        setTimeout(() => {
+          closeModal();
+          fetchReviews();
+        }, 2000);
+      } else if (result.code === 'NOT_VERIFIED') {
+        setModalMessage('You have not placed order');
+        setModalMessageType('error');
+      } else if (result.code === 'NOT_FOUND') {
+        setModalMessage(result.error || 'No review found with this email');
+        setModalMessageType('error');
+      } else {
+        setModalMessage(result.error || 'Something went wrong. Please try again.');
+        setModalMessageType('error');
+      }
+
     } catch (error) {
       console.error('Error deleting review:', error);
       setModalMessage('❌ Network error. Please try again.');

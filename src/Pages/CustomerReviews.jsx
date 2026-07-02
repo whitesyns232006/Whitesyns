@@ -12,9 +12,12 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-  // ✅ Form visibility state - Hidden by default
+  // Form visibility state
   const [isFormOpen, setIsFormOpen] = useState(false);
   const formRef = useRef(null);
+
+  // ✅ Help Modal State (Custom)
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +39,7 @@ const CustomerReviews = () => {
   });
   const [hoverRating, setHoverRating] = useState(0);
 
-  // ✅ Click outside handler - Close form when clicking outside
+  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target) && isFormOpen) {
@@ -45,25 +48,29 @@ const CustomerReviews = () => {
       }
     };
 
-    // ✅ ESC key handler
     const handleEscKey = (event) => {
-      if (event.key === 'Escape' && isFormOpen) {
-        setIsFormOpen(false);
-        resetForm();
+      if (event.key === 'Escape') {
+        if (isFormOpen) {
+          setIsFormOpen(false);
+          resetForm();
+        }
+        if (showHelpModal) {
+          setShowHelpModal(false);
+        }
+        if (showModal) {
+          setShowModal(false);
+        }
       }
     };
 
-    // ❌ SCROLL handler REMOVED - Form will NOT close on scroll
-
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscKey);
-    // document.removeEventListener('scroll', handleScroll); // REMOVED
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isFormOpen]);
+  }, [isFormOpen, showHelpModal, showModal]);
 
   const resetForm = () => {
     setFormData({ name: '', email: '', rating: 0, review: '' });
@@ -80,6 +87,21 @@ const CustomerReviews = () => {
   const closeForm = () => {
     setIsFormOpen(false);
     resetForm();
+  };
+
+  // ✅ Open Help Modal (instead of browser confirm)
+  const openHelpModal = () => {
+    setShowHelpModal(true);
+  };
+
+  // ✅ Handle Help Modal Choice
+  const handleHelpChoice = (choice) => {
+    setShowHelpModal(false);
+    if (choice === 'edit') {
+      openModal('edit');
+    } else if (choice === 'delete') {
+      openModal('delete');
+    }
   };
 
   useEffect(() => {
@@ -520,7 +542,7 @@ const CustomerReviews = () => {
             </div>
           )}
 
-          {/* ✅ Write a Review Button - Always Visible */}
+          {/* Write a Review Button */}
           <div className="text-center mb-6">
             <button
               onClick={openForm}
@@ -530,7 +552,7 @@ const CustomerReviews = () => {
             </button>
           </div>
 
-          {/* ✅ Review Form - Hidden by Default */}
+          {/* Review Form */}
           {isFormOpen && (
             <motion.div
               ref={formRef}
@@ -540,7 +562,6 @@ const CustomerReviews = () => {
               transition={{ duration: 0.3 }}
               className="relative bg-white/95 backdrop-blur-sm p-5 md:p-6 rounded-xl shadow-2xl border border-[#D4AF37]/30 max-w-2xl mx-auto"
             >
-              {/* Close Button */}
               <button
                 onClick={closeForm}
                 className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl transition-colors duration-200"
@@ -588,7 +609,6 @@ const CustomerReviews = () => {
                   </p>
                 </div>
 
-                {/* Rating Stars */}
                 <div>
                   <label className="block text-sm font-medium text-[#555] mb-1">
                     Rating <span className="text-red-500">*</span>
@@ -640,7 +660,6 @@ const CustomerReviews = () => {
                   </div>
                 )}
 
-                {/* Buttons Row */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="submit"
@@ -654,18 +673,10 @@ const CustomerReviews = () => {
                     {submitting ? 'Submitting...' : 'Submit Review'}
                   </button>
 
+                  {/* ✅ Help Button - Opens Custom Modal instead of browser confirm */}
                   <button
                     type="button"
-                    onClick={() => {
-                      const action = window.confirm(
-                        'Choose an option:\n\n• Click OK to Edit your Review\n• Click Cancel to Delete your Review'
-                      );
-                      if (action) {
-                        openModal('edit');
-                      } else {
-                        openModal('delete');
-                      }
-                    }}
+                    onClick={openHelpModal}
                     className="px-4 py-2.5 rounded-full font-['Josefin_Sans'] text-sm font-medium text-[#D4AF37] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-all duration-300"
                   >
                     Help
@@ -676,7 +687,6 @@ const CustomerReviews = () => {
                   ✅ Verified customers get auto-approved. Others need moderation.
                 </p>
 
-                {/* Policy Link */}
                 <div className="text-center mt-2">
                   <Link 
                     to="/privacy-policy" 
@@ -692,7 +702,57 @@ const CustomerReviews = () => {
       </motion.section>
 
       {/* ============================================
-          MODAL - Edit/Delete
+          CUSTOM HELP MODAL (Replaces browser confirm)
+      ============================================ */}
+      {showHelpModal && (
+        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl"
+          >
+            <div className="text-center mb-4">
+              <div className="text-4xl mb-3">🛠️</div>
+              <h3 className="font-['Tenor_Sans'] text-xl text-[#333]">
+                Choose an Option
+              </h3>
+              <p className="text-sm text-[#555] mt-1">
+                What would you like to do with your review?
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => handleHelpChoice('edit')}
+                className="w-full py-3 px-4 bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white rounded-xl font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#D4AF37]/30 flex items-center justify-center gap-2"
+              >
+                <span>✏️</span> Edit Your Review
+              </button>
+              
+              <button
+                onClick={() => handleHelpChoice('delete')}
+                className="w-full py-3 px-4 bg-red-500 text-white rounded-xl font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 flex items-center justify-center gap-2"
+              >
+                <span>🗑️</span> Delete Your Review
+              </button>
+              
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="w-full py-3 px-4 border border-[#C2E5D8] text-[#555] rounded-xl font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 hover:bg-gray-50 flex items-center justify-center gap-2"
+              >
+                <span>❌</span> Cancel
+              </button>
+            </div>
+
+            <p className="text-xs text-center text-[#888] mt-4">
+              💡 Your review will be updated or deleted if the email matches our records.
+            </p>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ============================================
+          EDIT/DELETE MODAL
       ============================================ */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
@@ -713,7 +773,6 @@ const CustomerReviews = () => {
               </button>
             </div>
 
-            {/* Email Input */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Email Address <span className="text-red-500">*</span>
@@ -730,7 +789,6 @@ const CustomerReviews = () => {
               </p>
             </div>
 
-            {/* Edit Mode - Review Text & Rating */}
             {modalMode === 'edit' && (
               <>
                 <div className="mb-4">
@@ -770,7 +828,6 @@ const CustomerReviews = () => {
               </>
             )}
 
-            {/* Delete Mode - Notice */}
             {modalMode === 'delete' && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-sm text-red-600">
@@ -779,7 +836,6 @@ const CustomerReviews = () => {
               </div>
             )}
 
-            {/* Modal Message */}
             {modalMessage && (
               <div className={`text-center text-sm p-2 rounded-lg mb-4 ${
                 modalMessageType === 'success' 
@@ -790,7 +846,6 @@ const CustomerReviews = () => {
               </div>
             )}
 
-            {/* Modal Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={modalMode === 'edit' ? handleEditReview : handleDeleteReview}

@@ -11,19 +11,24 @@ const CustomerReviews = () => {
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitMessageType, setSubmitMessageType] = useState('');
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcxK6mCJD-_MN6CUI5bwabrz9rtxhR0vM1ntSmJANV4iHVbTDZ/exec';
+  // ✅ Updated Google Apps Script URL
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcxK6mCJD-_MN6CUI5bwabrz9rtxhR0vM1ntSmJANV4iHVbTDZ/exec';
+
+  // Form state - ✅ Default rating is 0 (no stars selected)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    rating: 0,
+    rating: 0, // ✅ Default 0 - No stars selected
     review: ''
   });
   const [hoverRating, setHoverRating] = useState(0);
 
+  // Fetch reviews on mount
   useEffect(() => {
     fetchReviews();
   }, []);
 
+  // Fetch reviews from Google Sheets
   const fetchReviews = async () => {
     try {
       setLoading(true);
@@ -33,6 +38,8 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
       if (Array.isArray(data)) {
         setReviews(data);
         calculateStats(data);
+      } else if (data.error) {
+        console.error('Error fetching reviews:', data.error);
       }
     } catch (error) {
       console.error('Failed to fetch reviews:', error);
@@ -41,6 +48,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
     }
   };
 
+  // Calculate average rating and total
   const calculateStats = (reviewsData) => {
     if (reviewsData.length === 0) {
       setStats({ average: 0, total: 0 });
@@ -54,16 +62,18 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
     setStats({ average, total });
   };
 
+  // Handle star click
   const handleStarClick = (rating) => {
     setFormData(prev => ({ ...prev, rating }));
   };
 
+  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // ✅ UPDATED: Submit review with proper response handling
+  // ✅ Submit review with proper response handling
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -95,7 +105,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
     try {
       setSubmitting(true);
       
-      // ✅ Use POST with proper response handling
       const response = await fetch(SCRIPT_URL, {
         method: 'POST',
         headers: {
@@ -139,11 +148,14 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
     }
   };
 
-  // Render stars
+  // ✅ Render stars - No pre-selected stars
   const renderStars = (rating, interactive = false, onStarClick = null, onStarHover = null, showVerified = false) => {
     const stars = [];
     const maxRating = 5;
-    const currentRating = interactive ? hoverRating || rating : rating;
+    
+    // ✅ For interactive: use hoverRating or rating (which is 0 by default)
+    // ✅ For display: use the passed rating
+    const currentRating = interactive ? (hoverRating || rating) : rating;
     
     for (let i = 1; i <= maxRating; i++) {
       stars.push(
@@ -175,14 +187,17 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
     return stars;
   };
 
+  // Load more reviews
   const loadMoreReviews = () => {
     setVisibleCount(prev => prev + 5);
   };
 
+  // Get visible reviews
   const getVisibleReviews = () => {
     return reviews.slice(0, visibleCount);
   };
 
+  // Loading state
   if (loading) {
     return (
       <section className="py-12 px-[5%] md:px-[10%] bg-[#F5FFFA] border-y border-[#C2E5D8]">
@@ -321,7 +336,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFLudG6Wxut0hUf_dcx
               </p>
             </div>
 
-            {/* Rating Stars */}
+            {/* ✅ Rating Stars - No pre-selected stars */}
             <div>
               <label className="block text-sm font-medium text-[#555] mb-1">
                 Rating <span className="text-red-500">*</span>

@@ -6,12 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ShopNowModal = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const location = useLocation();
   const modalRef = useRef(null);
 
-  // Hide on order form and confirmation pages
-  const hideOnPages = ['/orders', '/confirmation'];
-  const shouldHide = hideOnPages.includes(location.pathname);
+  // ❌ REMOVED - Hide on order form and confirmation pages
+  // Ab ye modal har page par dikhega, including orders and confirmation
+  // const hideOnPages = ['/orders', '/confirmation'];
+  // const shouldHide = hideOnPages.includes(location.pathname);
 
   // Check if footer is visible using Intersection Observer
   useEffect(() => {
@@ -26,7 +28,7 @@ const ShopNowModal = () => {
       },
       {
         threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px', // Footer ke thoda pehle hi trigger ho
+        rootMargin: '0px 0px -50px 0px',
       }
     );
 
@@ -37,15 +39,36 @@ const ShopNowModal = () => {
     };
   }, []);
 
+  // Hide on scroll down, show on scroll up
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
   // Show on page load
   useEffect(() => {
     setIsVisible(true);
   }, [location.pathname]);
 
-  // Don't render on specific pages
-  if (shouldHide) {
-    return null;
-  }
+  // ❌ REMOVED - Don't render on specific pages
+  // if (shouldHide) {
+  //   return null;
+  // }
 
   return (
     <AnimatePresence>
@@ -64,7 +87,7 @@ const ShopNowModal = () => {
             stiffness: 300, 
             damping: 30 
           }}
-          className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-[9998] w-[92%] max-w-xl transition-all duration-300`}
+          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9998] w-[92%] max-w-xl transition-all duration-300"
         >
           <div className="bg-gradient-to-r from-[#F5F5F5] via-white to-[#F5F5F5] backdrop-blur-md rounded-full shadow-2xl border border-[#D4AF37]/30 p-1.5 md:p-2 flex items-center gap-3 md:gap-4">
             {/* Left - Product Image */}

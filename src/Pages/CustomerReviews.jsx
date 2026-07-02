@@ -25,7 +25,7 @@ const CustomerReviews = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalMessageType, setModalMessageType] = useState('');
 
-  const SCRIPT_URL = 'https://script.google.com/cros/s/AKfycbyUSoAVfhGUj3h7EOpmvZJMazgDNeNJxjBkTjMjgZG8kgM_mKjad9fswf42ibtyWfbc/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFipcvFHUoQxu6XKoMckJrg7SkszV_T5WcjDPNqtvgRS56eCwq6yajBX1QS1r889NP/exec';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -182,32 +182,49 @@ const CustomerReviews = () => {
     
     try {
       setSubmitting(true);
-      
-      // ✅ no-cors mode
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'submitReview',
-          name: formData.name,
-          email: formData.email,
-          rating: formData.rating,
-          review: formData.review
-        })
-      });
-      
-      setFormData({ name: '', email: '', rating: 0, review: '' });
-      setSubmitMessage('✅ Thank you! Your review has been submitted.');
-      setSubmitMessageType('success');
-      
-      setTimeout(() => {
-        fetchReviews();
-        closeForm();
-      }, 2000);
-      
+
+      // ✅ Real request (no 'no-cors') so we can actually read the server's response.
+      // Content-Type is text/plain to avoid a CORS preflight (Apps Script has no doOptions),
+      // while the body itself is still valid JSON that the backend parses normally.
+      // A minimum delay is added so the "validating your email" feel is never instant/jumpy.
+      const minDelay = new Promise((resolve) => setTimeout(resolve, 1200));
+
+      const [response] = await Promise.all([
+        fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({
+            action: 'submitReview',
+            name: formData.name,
+            email: formData.email,
+            rating: formData.rating,
+            review: formData.review
+          })
+        }),
+        minDelay
+      ]);
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFormData({ name: '', email: '', rating: 0, review: '' });
+        setSubmitMessage('You Review Published');
+        setSubmitMessageType('success');
+
+        setTimeout(() => {
+          fetchReviews();
+          closeForm();
+        }, 2000);
+      } else if (result.code === 'NOT_VERIFIED') {
+        setSubmitMessage('You Have Not Placed Order Yet');
+        setSubmitMessageType('error');
+      } else {
+        setSubmitMessage(result.error || '❌ Something went wrong. Please try again.');
+        setSubmitMessageType('error');
+      }
+
     } catch (error) {
       console.error('Error submitting review:', error);
       setSubmitMessage('❌ Network error. Please try again.');

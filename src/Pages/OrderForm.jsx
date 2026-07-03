@@ -226,7 +226,7 @@ const OrderForm = () => {
 
   // Submit to Google Sheets
   const submitToGoogleSheets = async (data) => {
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxNr2WQt4o2vPyF04VYn9b-_JehP6Pnf6hVGHRuQbt2Vg9KGObIGognU901G-umGfR7/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxHf1HpVA7lyhw0fBaEhl-qilifPNYeZJ1Sv7pn__me6C3AOnSdNkj87xGFxpO6HMQx/exec';
     
     try {
       await fetch(scriptURL, {

@@ -88,7 +88,7 @@ const Footer = () => {
               <path d="M15 7C15.5304 7 16.0391 7.21071 16.4142 7.58579C16.7893 7.96086 17 8.46957 17 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M15 3C16.5913 3 18.1174 3.63214 19.2426 4.75736C20.3679 5.88258 21 7.4087 21 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span>+92 336 960 1623</span>
+            <span>+92 342 775 0673</span>
           </div>
 
           {/* Social Icons */}
@@ -134,7 +134,7 @@ const Footer = () => {
 
             {/* WhatsApp */}
             <a 
-              href="https://wa.me/923369601623?text=Assalam%20o%20alaikum%2C%20I%20have%20a%20query%20about%20Whitesyns%20product"
+              href="https://wa.me/923427750673?text=Assalam%20o%20alaikum%2C%20I%20have%20a%20query%20about%20Whitesyns%20product"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white border border-[#555] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:bg-[#25D366] hover:border-[#25D366] group"

@@ -198,7 +198,7 @@ const OrderConfirmation = () => {
 
                 {/* WhatsApp */}
                 <a 
-                  href="https://wa.me/923369601623?text=Assalam%20o%20alaikum%2C%20I%20have%20a%20query%20about%20Whitesyns%20product"
+                  href="https://wa.me/923427750673?text=Assalam%20o%20alaikum%2C%20I%20have%20a%20query%20about%20Whitesyns%20product"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center hover:-translate-y-1 transition-all duration-300 shadow-md hover:shadow-lg"

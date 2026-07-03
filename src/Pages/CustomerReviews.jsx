@@ -25,7 +25,7 @@ const CustomerReviews = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [modalMessageType, setModalMessageType] = useState('');
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWy74E9wPCRGuHYn0oL5VtnkgLDYbbD2KYpbSWm4LIuOZfJXME7FhhCKZgle3biaz4/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxHf1HpVA7lyhw0fBaEhl-qilifPNYeZJ1Sv7pn__me6C3AOnSdNkj87xGFxpO6HMQx/exec';
 
   const [formData, setFormData] = useState({
     name: '',

@@ -8,12 +8,19 @@ const ShopNowModal = () => {
   const location = useLocation();
   const modalRef = useRef(null);
 
-  // ✅ Remove all hide/show logic - Always visible
+  // ✅ Hide on Order Form page only
+  const hideOnPages = ['/orders'];
+  const shouldHide = hideOnPages.includes(location.pathname);
 
-  // Show on page load
+  // Show on page load (except hidden pages)
   useEffect(() => {
     setIsVisible(true);
   }, [location.pathname]);
+
+  // Don't render on Order Form page
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
@@ -47,7 +54,7 @@ const ShopNowModal = () => {
             {/* Center - Text */}
             <div className="flex-1 min-w-0">
               <p className="text-xs md:text-sm font-['Tenor_Sans'] text-[#333] truncate">
-                 <span className="font-bold text-[#D4AF37]">Whitesyns</span>
+                <span className="font-bold text-[#D4AF37]">Whitesyns</span>
               </p>
               <p className="text-[10px] md:text-xs text-[#666] truncate">
                 Natural Herbal Teeth Whitening Care

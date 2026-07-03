@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,17 @@ const OrderForm = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // ✅ Refs for error scrolling
+  const fullNameRef = useRef(null);
+  const emailRef = useRef(null);
+  const quantityRef = useRef(null);
+  const addressRef = useRef(null);
+  const cityRef = useRef(null);
+  const phoneRef = useRef(null);
+  const billingNameRef = useRef(null);
+  const billingAddressRef = useRef(null);
+  const billingPhoneRef = useRef(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -107,64 +118,118 @@ const OrderForm = () => {
     }, 7000);
   };
 
+  // ✅ Scroll to error field
+  const scrollToError = (fieldId) => {
+    const fieldMap = {
+      fullName: fullNameRef,
+      email: emailRef,
+      quantity: quantityRef,
+      address: addressRef,
+      city: cityRef,
+      phone: phoneRef,
+      billingName: billingNameRef,
+      billingAddress: billingAddressRef,
+      billingPhone: billingPhoneRef
+    };
+
+    const ref = fieldMap[fieldId];
+    if (ref && ref.current) {
+      // Smooth scroll to the field
+      ref.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+      
+      // Focus on the input
+      const input = ref.current.querySelector('input, textarea, select');
+      if (input) {
+        setTimeout(() => {
+          input.focus();
+          input.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+          setTimeout(() => {
+            input.classList.remove('ring-2', 'ring-red-500');
+          }, 2000);
+        }, 300);
+      }
+    }
+  };
+
   // Validate form
   const validateForm = () => {
     const newErrors = {};
+    let firstErrorField = null;
 
     // Validate full name
     if (!validateName(formData.fullName)) {
       newErrors.fullName = 'Write Correct Name (no numbers or special characters)';
+      if (!firstErrorField) firstErrorField = 'fullName';
     }
 
     // Validate email
     if (!validateEmail(formData.email)) {
       newErrors.email = 'Enter a valid email address with @ symbol (Gmail, Yahoo, Hotmail, Outlook)';
+      if (!firstErrorField) firstErrorField = 'email';
     }
 
     // Validate quantity
     if (!validateQuantity(formData.quantity)) {
       newErrors.quantity = 'Max 5 jars for single purchase';
+      if (!firstErrorField) firstErrorField = 'quantity';
     }
 
     // Validate address
     if (!validateAddress(formData.address)) {
       newErrors.address = 'Write Address In Proper Format (minimum 15 characters)';
+      if (!firstErrorField) firstErrorField = 'address';
     }
 
     // Validate city
     if (!formData.city) {
       newErrors.city = 'Please select your province';
+      if (!firstErrorField) firstErrorField = 'city';
     }
 
     // Validate phone
     if (!validatePhone(formData.phone)) {
       newErrors.phone = 'Phone number must start with 03 and be 11 digits';
+      if (!firstErrorField) firstErrorField = 'phone';
     }
 
     // Validate billing fields if another address is selected
     if (formData.billingOption === 'another') {
       if (!validateName(formData.billingName)) {
         newErrors.billingName = 'Write Correct Name (no numbers or special characters)';
+        if (!firstErrorField) firstErrorField = 'billingName';
       }
       if (!validateAddress(formData.billingAddress)) {
         newErrors.billingAddress = 'Write Address In Proper Format (minimum 15 characters)';
+        if (!firstErrorField) firstErrorField = 'billingAddress';
       }
       if (!validatePhone(formData.billingPhone)) {
         newErrors.billingPhone = 'Phone number must start with 03 and be 11 digits';
+        if (!firstErrorField) firstErrorField = 'billingPhone';
       }
     }
 
     setErrors(newErrors);
+    
+    // ✅ Scroll to first error field
+    if (firstErrorField) {
+      setTimeout(() => {
+        scrollToError(firstErrorField);
+      }, 100);
+    }
+    
     return Object.keys(newErrors).length === 0;
   };
 
   // Submit to Google Sheets
   const submitToGoogleSheets = async (data) => {
-    // Google Apps Script URL (same as index.html)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxNr2WQt4o2vPyF04VYn9b-_JehP6Pnf6hVGHRuQbt2Vg9KGObIGognU901G-umGfR7/exec';
     
     try {
-      const response = await fetch(scriptURL, {
+      await fetch(scriptURL, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
@@ -172,7 +237,6 @@ const OrderForm = () => {
         },
         body: JSON.stringify(data)
       });
-      
       return true;
     } catch (error) {
       console.error('Error submitting to Google Sheets:', error);
@@ -185,7 +249,6 @@ const OrderForm = () => {
     if (validateForm()) {
       setIsSubmitting(true);
       
-      // Calculate total
       const quantity = parseInt(formData.quantity);
       let total;
       let isSpecialOffer = false;
@@ -197,13 +260,11 @@ const OrderForm = () => {
         total = 699 * quantity;
       }
 
-      // Determine delivery time
       let deliveryTime = "6 days";
       if (formData.city === "punjab" || formData.city === "kpk") {
         deliveryTime = "5 days";
       }
 
-      // Prepare order data for Google Sheets
       const sheetData = {
         fullName: formData.fullName,
         email: formData.email,
@@ -223,10 +284,8 @@ const OrderForm = () => {
         orderDate: new Date().toLocaleString()
       };
 
-      // Submit to Google Sheets
       await submitToGoogleSheets(sheetData);
 
-      // Prepare order data for confirmation page
       const orderData = {
         ...formData,
         totalAmount: total,
@@ -235,8 +294,6 @@ const OrderForm = () => {
       };
 
       setIsSubmitting(false);
-      
-      // Navigate to order confirmation page
       navigate('/confirmation', { state: { orderData } });
     }
   };
@@ -245,15 +302,13 @@ const OrderForm = () => {
     <motion.main 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className="min-h-[70vh] bg-linear-to-b from-[#FDFBF7] to-[#F5F0E8] py-12 md:py-16 px-[5%] md:px-[10%]"
     >
-      {/* Decorative top bar */}
       <div className="max-w-225 mx-auto mb-8">
         <div className="w-20 h-1 bg-linear-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
       </div>
 
-      {/* Order Form Header */}
       <div className="text-center mb-10 relative">
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-60 h-60 bg-[#C0A020]/5 rounded-full blur-2xl -z-10"></div>
         <h1 className="font-['Tenor_Sans'] text-4xl md:text-5xl lg:text-[3.2rem] text-[#C0A020] inline-block relative mb-4">
@@ -265,9 +320,7 @@ const OrderForm = () => {
         </p>
       </div>
 
-      {/* Order Form Container */}
       <div className="max-w-225 mx-auto bg-white/85 backdrop-blur-sm p-6 md:p-10 lg:p-12 rounded-2xl shadow-xl border border-[#C0A020]/20 relative overflow-hidden">
-        {/* Decorative corner elements */}
         <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#C0A020]/20 rounded-tl-2xl"></div>
         <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-[#C0A020]/20 rounded-tr-2xl"></div>
         <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-[#C0A020]/20 rounded-bl-2xl"></div>
@@ -275,7 +328,7 @@ const OrderForm = () => {
 
         <form className="space-y-6 relative z-10" onSubmit={(e) => e.preventDefault()}>
           {/* Full Name */}
-          <div>
+          <div ref={fullNameRef}>
             <label htmlFor="fullName" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Full Name <span className="text-red-500">*</span>
             </label>
@@ -291,7 +344,7 @@ const OrderForm = () => {
           </div>
 
           {/* Email */}
-          <div>
+          <div ref={emailRef}>
             <label htmlFor="email" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Email Address <span className="text-red-500">*</span>
             </label>
@@ -307,7 +360,7 @@ const OrderForm = () => {
           </div>
 
           {/* Quantity */}
-          <div>
+          <div ref={quantityRef}>
             <label htmlFor="quantity" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Quantity Of Containers <span className="text-red-500">*</span>
             </label>
@@ -325,7 +378,7 @@ const OrderForm = () => {
           </div>
 
           {/* Delivery Address */}
-          <div>
+          <div ref={addressRef}>
             <label htmlFor="address" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Delivery Address <span className="text-red-500">*</span>
             </label>
@@ -372,7 +425,7 @@ const OrderForm = () => {
           </div>
 
           {/* Province */}
-          <div>
+          <div ref={cityRef}>
             <label htmlFor="city" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Select Province <span className="text-red-500">*</span>
             </label>
@@ -408,7 +461,7 @@ const OrderForm = () => {
           </div>
 
           {/* Phone Number */}
-          <div>
+          <div ref={phoneRef}>
             <label htmlFor="phone" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
               Phone Number <span className="text-red-500">*</span>
             </label>
@@ -472,7 +525,7 @@ const OrderForm = () => {
               transition={{ duration: 0.5 }}
               className="space-y-4 overflow-hidden"
             >
-              <div>
+              <div ref={billingNameRef}>
                 <label htmlFor="billingName" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
                   Name <span className="text-red-500">*</span>
                 </label>
@@ -487,7 +540,7 @@ const OrderForm = () => {
                 {errors.billingName && <p className="text-red-500 text-sm mt-1">{errors.billingName}</p>}
               </div>
 
-              <div>
+              <div ref={billingAddressRef}>
                 <label htmlFor="billingAddress" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
                   Complete Address <span className="text-red-500">*</span>
                 </label>
@@ -502,7 +555,7 @@ const OrderForm = () => {
                 {errors.billingAddress && <p className="text-red-500 text-sm mt-1">{errors.billingAddress}</p>}
               </div>
 
-              <div>
+              <div ref={billingPhoneRef}>
                 <label htmlFor="billingPhone" className="font-['Tenor_Sans'] text-base md:text-lg text-[#333] block mb-2">
                   Active Phone No <span className="text-red-500">*</span>
                 </label>
@@ -520,7 +573,7 @@ const OrderForm = () => {
             </motion.div>
           )}
 
-          {/* Buttons - In a single row */}
+          {/* Buttons */}
           <div className="flex flex-row gap-4 justify-center pt-4">
             <button
               type="button"
@@ -540,7 +593,6 @@ const OrderForm = () => {
         </form>
       </div>
 
-      {/* Bottom decorative bar */}
       <div className="max-w-225 mx-auto mt-8">
         <div className="w-20 h-1 bg-linear-to-r from-[#C0A020] to-[#D4AF37] mx-auto rounded-full"></div>
       </div>

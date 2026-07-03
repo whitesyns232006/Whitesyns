@@ -40,6 +40,7 @@ function App() {
         <Helmet>
           <title>Whitesyns Pakistan</title>
           <meta name="description" content="Whitesyns - Pakistan's first edible teeth-whitening solution" />
+          <link rel="canonical" href="https://whitesynspakistan.com.pk/" />
         </Helmet>
         
         <ScrollToTop />
@@ -51,6 +52,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/" />
                 </Helmet>
                 <Home />
               </RouteWrapper>
@@ -59,6 +61,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>About Us - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/about" />
                 </Helmet>
                 <AboutUs />
               </RouteWrapper>
@@ -67,6 +70,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>FAQs - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/faq" />
                 </Helmet>
                 <FAQs />
               </RouteWrapper>
@@ -75,6 +79,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>Terms of Service - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/terms" />
                 </Helmet>
                 <TermsOfService />
               </RouteWrapper>
@@ -83,6 +88,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>Place Order - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/orders" />
                 </Helmet>
                 <OrderForm />
               </RouteWrapper>
@@ -91,6 +97,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>Order Confirmation - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/confirmation" />
                 </Helmet>
                 <OrderConfirmation />
               </RouteWrapper>
@@ -99,6 +106,7 @@ function App() {
               <RouteWrapper>
                 <Helmet>
                   <title>Track Shipment - Whitesyns Pakistan</title>
+                  <link rel="canonical" href="https://whitesynspakistan.com.pk/track" />
                 </Helmet>
                 <Home />
               </RouteWrapper>
@@ -109,7 +117,6 @@ function App() {
         
         <Footer />
         
-        {/* ✅ ShopNowModal - Appears on all pages except orders/confirmation */}
         <ShopNowModal />
       </div>
     </HelmetProvider>

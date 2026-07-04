@@ -6,9 +6,6 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [trackingNumber, setTrackingNumber] = useState('');
-  const [trackingResult, setTrackingResult] = useState(null);
-  const [isTracking, setIsTracking] = useState(false);
 
   // Search data
   const searchData = [
@@ -127,185 +124,10 @@ const Header = () => {
     window.location.href = path;
   };
 
-  // ✅ TRACKING FUNCTION - REAL Pakistan Post API Integration
-  const handleTrackSubmit = async (e) => {
+  // ✅ Track Shipment link handler - opens in new tab
+  const handleTrackClick = (e) => {
     e.preventDefault();
-    if (!trackingNumber.trim()) {
-      setTrackingResult({ error: 'Please enter a tracking number' });
-      return;
-    }
-
-    setIsTracking(true);
-    setTrackingResult(null);
-
-    try {
-      // ✅ OPTION 1: Pakistan Post API (if available)
-      // const response = await fetch(`https://ep.gov.pk/api/track?number=${trackingNumber.trim()}`);
-      // const data = await response.json();
-
-      // ✅ OPTION 2: Track123 API (Free - Recommended)
-      // const response = await fetch('https://api.track123.com/api/v1/track', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'API-Key': 'YOUR_API_KEY' // Get from track123.com
-      //   },
-      //   body: JSON.stringify({ tracking_number: trackingNumber.trim() })
-      // });
-      // const data = await response.json();
-
-      // ✅ OPTION 3: Google Sheets Tracking (Demo - Replace with real API)
-      // For now, using extended demo data
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      // ✅ Demo Tracking Data with more numbers
-      const demoData = {
-        // Whitesyns Orders
-        'WS-2026-001': {
-          status: 'Delivered',
-          date: '2026-07-04',
-          time: '02:30 PM',
-          location: 'Rawalpindi, Pakistan',
-          details: 'Package delivered successfully. Received by customer.',
-          courier: 'Pakistan Post'
-        },
-        'WS-2026-002': {
-          status: 'In Transit',
-          date: '2026-07-04',
-          time: '10:15 AM',
-          location: 'Lahore, Pakistan',
-          details: 'Package is in transit to destination. Expected delivery in 2-3 days.',
-          courier: 'TCS'
-        },
-        'WS-2026-003': {
-          status: 'Processing',
-          date: '2026-07-03',
-          time: '05:45 PM',
-          location: 'Islamabad, Pakistan',
-          details: 'Package is being processed at warehouse. Will be dispatched soon.',
-          courier: 'Pakistan Post'
-        },
-        'WS-2026-004': {
-          status: 'Out for Delivery',
-          date: '2026-07-05',
-          time: '08:00 AM',
-          location: 'Karachi, Pakistan',
-          details: 'Package is out for delivery today. Please keep your phone handy.',
-          courier: 'Leopards Courier'
-        },
-        'WS-2026-005': {
-          status: 'Delivered',
-          date: '2026-07-03',
-          time: '11:20 AM',
-          location: 'Multan, Pakistan',
-          details: 'Package delivered successfully. Signature collected.',
-          courier: 'Pakistan Post'
-        },
-        // Pakistan Post tracking numbers (demo)
-        'VPL11479468': {
-          status: 'In Transit',
-          date: '2026-07-05',
-          time: '06:30 AM',
-          location: 'Karachi, Pakistan',
-          details: 'Package received at Karachi sorting center. Processing for delivery.',
-          courier: 'Pakistan Post'
-        },
-        'PK1234567890': {
-          status: 'Processing',
-          date: '2026-07-05',
-          time: '09:00 AM',
-          location: 'Lahore, Pakistan',
-          details: 'Package registered at Lahore GPO. Awaiting dispatch.',
-          courier: 'Pakistan Post'
-        },
-        'PK9876543210': {
-          status: 'Delivered',
-          date: '2026-07-04',
-          time: '03:15 PM',
-          location: 'Rawalpindi, Pakistan',
-          details: 'Package delivered successfully. Customer confirmed receipt.',
-          courier: 'Pakistan Post'
-        },
-        'TCS-123456': {
-          status: 'In Transit',
-          date: '2026-07-05',
-          time: '07:45 AM',
-          location: 'Islamabad, Pakistan',
-          details: 'Package picked up from warehouse. En route to destination.',
-          courier: 'TCS'
-        },
-        'LEO-789012': {
-          status: 'Out for Delivery',
-          date: '2026-07-05',
-          time: '08:30 AM',
-          location: 'Karachi, Pakistan',
-          details: 'Package is with rider. Will be delivered today.',
-          courier: 'Leopards Courier'
-        }
-      };
-
-      const trackingId = trackingNumber.trim().toUpperCase();
-      const result = demoData[trackingId];
-
-      if (result) {
-        setTrackingResult({ 
-          success: true, 
-          data: result, 
-          trackingId,
-          message: '✅ Tracking information found!'
-        });
-      } else {
-        // Try to fetch from Pakistan Post API as fallback
-        try {
-          // Simulate API call for unknown number
-          const fallbackData = {
-            'VPL11479468': {
-              status: 'In Transit',
-              date: '2026-07-05',
-              time: '06:30 AM',
-              location: 'Karachi, Pakistan',
-              details: 'Package received at Karachi sorting center.',
-              courier: 'Pakistan Post'
-            },
-            'PK1234567890': {
-              status: 'Processing',
-              date: '2026-07-05',
-              time: '09:00 AM',
-              location: 'Lahore, Pakistan',
-              details: 'Package registered at Lahore GPO.',
-              courier: 'Pakistan Post'
-            }
-          };
-          
-          const fallbackResult = fallbackData[trackingId];
-          if (fallbackResult) {
-            setTrackingResult({ 
-              success: true, 
-              data: fallbackResult, 
-              trackingId,
-              message: '✅ Tracking information found!'
-            });
-          } else {
-            setTrackingResult({ 
-              error: '❌ No tracking information found. Please check your tracking number and try again.',
-              suggestion: '💡 Make sure you entered the correct tracking number. If you have a Pakistan Post tracking number, it should be 8-12 digits long.'
-            });
-          }
-        } catch (fallbackError) {
-          setTrackingResult({ 
-            error: '❌ No tracking information found. Please check your tracking number and try again.',
-            suggestion: '💡 Make sure you entered the correct tracking number.'
-          });
-        }
-      }
-    } catch (error) {
-      setTrackingResult({ 
-        error: '❌ Network error. Please try again later.',
-        suggestion: '💡 Please check your internet connection and try again.'
-      });
-    } finally {
-      setIsTracking(false);
-    }
+    window.open('https://ep.gov.pk/track.asp', '_blank');
   };
 
   return (
@@ -339,131 +161,16 @@ const Header = () => {
           <Link to="/orders" className={`nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] ${location.pathname === '/orders' ? 'text-[#D4AF37]' : ''}`}>
             Place Order
           </Link>
-          
-          {/* Track Shipment - Dropdown with custom tracking */}
-          <div className="relative group">
-            <button 
-              className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] cursor-pointer flex items-center gap-1"
-            >
-              Track Shipment
-              <svg className="w-3 h-3 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </button>
-            
-            {/* Dropdown Menu */}
-            <div className="absolute right-0 mt-2 w-[350px] md:w-[420px] bg-white rounded-xl shadow-2xl border border-[#C2E5D8] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[999] p-4 max-h-[500px] overflow-y-auto">
-              <h4 className="font-['Tenor_Sans'] text-sm text-[#333] mb-3 text-center">
-                🔍 Track Your Shipment
-              </h4>
-              <form onSubmit={handleTrackSubmit} className="space-y-3">
-                <div>
-                  <label className="block text-xs text-[#555] mb-1 font-medium">
-                    Enter Tracking Number
-                  </label>
-                  <input
-                    type="text"
-                    value={trackingNumber}
-                    onChange={(e) => setTrackingNumber(e.target.value)}
-                    placeholder="e.g., VPL11479468, WS-2026-001"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
-                    disabled={isTracking}
-                  />
-                  <p className="text-[10px] text-[#888] mt-1">
-                    💡 Supports Pakistan Post, TCS, Leopards & Whitesyns tracking
-                  </p>
-                </div>
-                <button
-                  type="submit"
-                  disabled={isTracking}
-                  className={`w-full py-2 rounded-lg font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 ${
-                    isTracking 
-                      ? 'bg-gray-300 cursor-not-allowed' 
-                      : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-0.5 hover:shadow-lg'
-                  }`}
-                >
-                  {isTracking ? '⏳ Tracking...' : '🔍 Track Now'}
-                </button>
-              </form>
-
-              {/* Tracking Result */}
-              {trackingResult && (
-                <div className={`mt-3 p-3 rounded-lg text-sm ${
-                  trackingResult.success 
-                    ? 'bg-green-50 border border-green-200' 
-                    : 'bg-red-50 border border-red-200'
-                }`}>
-                  {trackingResult.success ? (
-                    <div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-bold text-[#333]">Status:</span>
-                        <span className={`font-semibold px-2 py-0.5 rounded-full text-xs ${
-                          trackingResult.data.status === 'Delivered' 
-                            ? 'bg-green-100 text-green-700' 
-                            : trackingResult.data.status === 'In Transit'
-                            ? 'bg-blue-100 text-blue-700'
-                            : trackingResult.data.status === 'Out for Delivery'
-                            ? 'bg-orange-100 text-orange-700'
-                            : 'bg-gray-100 text-gray-700'
-                        }`}>
-                          {trackingResult.data.status}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-1 mb-2">
-                        <div>
-                          <span className="text-[#555] text-xs">📅 Date:</span>
-                          <span className="text-[#333] text-xs font-medium block">{trackingResult.data.date}</span>
-                        </div>
-                        <div>
-                          <span className="text-[#555] text-xs">⏰ Time:</span>
-                          <span className="text-[#333] text-xs font-medium block">{trackingResult.data.time}</span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-[#555] text-xs">📍 Location:</span>
-                        <span className="text-[#333] text-xs font-medium">{trackingResult.data.location}</span>
-                      </div>
-                      {trackingResult.data.courier && (
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-[#555] text-xs">📦 Courier:</span>
-                          <span className="text-[#333] text-xs font-medium">{trackingResult.data.courier}</span>
-                        </div>
-                      )}
-                      <div className="mt-2 pt-2 border-t border-green-200">
-                        <p className="text-xs text-[#555]">{trackingResult.data.details}</p>
-                      </div>
-                      <p className="text-xs text-[#888] mt-2 text-center">
-                        🏷️ Tracking ID: <span className="font-mono font-bold">{trackingResult.trackingId}</span>
-                      </p>
-                    </div>
-                  ) : (
-                    <div>
-                      <p className="text-red-600 text-xs">{trackingResult.error}</p>
-                      {trackingResult.suggestion && (
-                        <p className="text-xs text-[#666] mt-1">{trackingResult.suggestion}</p>
-                      )}
-                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-[10px] text-[#555]">
-                          💡 Try these formats:
-                        </p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded">VPL11479468</span>
-                          <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded">PK1234567890</span>
-                          <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded">WS-2026-001</span>
-                          <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded">TCS-123456</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <p className="text-[10px] text-[#888] text-center mt-2">
-                🔗 Tracking data provided by Whitesyns & Pakistan Post
-              </p>
-            </div>
-          </div>
-
+          {/* ✅ Track Shipment - Opens in new tab */}
+          <a 
+            href="https://ep.gov.pk/track.asp" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            onClick={handleTrackClick}
+            className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] cursor-pointer"
+          >
+            Track Shipment
+          </a>
           <button 
             onClick={handleSearchClick}
             className="bg-transparent border-none cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300 p-1"
@@ -558,9 +265,6 @@ const Header = () => {
         }
         .nav-link.text-\\[\\#D4AF37\\]::after {
           width: 100%;
-        }
-        .group .nav-link svg {
-          transition: transform 0.3s ease;
         }
       `}</style>
     </>

@@ -6,6 +6,9 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackingResult, setTrackingResult] = useState(null);
+  const [isTracking, setIsTracking] = useState(false);
 
   // Search data
   const searchData = [
@@ -124,10 +127,56 @@ const Header = () => {
     window.location.href = path;
   };
 
-  // ✅ Track Shipment link handler - opens in new tab
-  const handleTrackClick = (e) => {
+  // ✅ Track Shipment - Stay on website with custom tracking
+  const handleTrackSubmit = (e) => {
     e.preventDefault();
-    window.open('https://ep.gov.pk/track.asp', '_blank');
+    if (!trackingNumber.trim()) {
+      setTrackingResult({ error: 'Please enter a tracking number' });
+      return;
+    }
+
+    setIsTracking(true);
+    setTrackingResult(null);
+
+    // ✅ Simulate tracking API call (replace with actual API)
+    setTimeout(() => {
+      // Demo tracking data - Replace with actual API integration
+      const demoData = {
+        'WS-2026-001': {
+          status: 'Delivered',
+          date: '2026-07-04',
+          time: '02:30 PM',
+          location: 'Rawalpindi, Pakistan',
+          details: 'Package delivered successfully'
+        },
+        'WS-2026-002': {
+          status: 'In Transit',
+          date: '2026-07-04',
+          time: '10:15 AM',
+          location: 'Lahore, Pakistan',
+          details: 'Package is in transit to destination'
+        },
+        'WS-2026-003': {
+          status: 'Processing',
+          date: '2026-07-03',
+          time: '05:45 PM',
+          location: 'Islamabad, Pakistan',
+          details: 'Package is being processed at warehouse'
+        }
+      };
+
+      const trackingId = trackingNumber.trim().toUpperCase();
+      const result = demoData[trackingId];
+
+      if (result) {
+        setTrackingResult({ success: true, data: result, trackingId });
+      } else {
+        setTrackingResult({ 
+          error: 'No tracking information found. Please check your tracking number and try again.' 
+        });
+      }
+      setIsTracking(false);
+    }, 1000);
   };
 
   return (
@@ -161,16 +210,102 @@ const Header = () => {
           <Link to="/orders" className={`nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] ${location.pathname === '/orders' ? 'text-[#D4AF37]' : ''}`}>
             Place Order
           </Link>
-          {/* ✅ Track Shipment - Opens in new tab */}
-          <a 
-            href="https://ep.gov.pk/track.asp" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            onClick={handleTrackClick}
-            className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] cursor-pointer"
-          >
-            Track Shipment
-          </a>
+          
+          {/* ✅ Track Shipment - Dropdown with custom tracking */}
+          <div className="relative group">
+            <button 
+              className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] cursor-pointer flex items-center gap-1"
+            >
+              Track Shipment
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            
+            {/* Dropdown Menu */}
+            <div className="absolute right-0 mt-2 w-[350px] md:w-[400px] bg-white rounded-xl shadow-2xl border border-[#C2E5D8] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[999] p-4">
+              <h4 className="font-['Tenor_Sans'] text-sm text-[#333] mb-3 text-center">
+                Track Your Shipment
+              </h4>
+              <form onSubmit={handleTrackSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-xs text-[#555] mb-1 font-medium">
+                    Enter Tracking Number
+                  </label>
+                  <input
+                    type="text"
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                    placeholder="e.g., WS-2026-001"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-[#C2E5D8] focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-300"
+                    disabled={isTracking}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isTracking}
+                  className={`w-full py-2 rounded-lg font-['Josefin_Sans'] text-sm font-medium transition-all duration-300 ${
+                    isTracking 
+                      ? 'bg-gray-300 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-[#D4AF37] to-[#C9A227] text-white hover:-translate-y-0.5 hover:shadow-lg'
+                  }`}
+                >
+                  {isTracking ? 'Tracking...' : 'Track Now'}
+                </button>
+              </form>
+
+              {/* Tracking Result */}
+              {trackingResult && (
+                <div className={`mt-3 p-3 rounded-lg text-sm ${
+                  trackingResult.success 
+                    ? 'bg-green-50 border border-green-200' 
+                    : 'bg-red-50 border border-red-200'
+                }`}>
+                  {trackingResult.success ? (
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-[#333]">Status:</span>
+                        <span className={`font-semibold ${
+                          trackingResult.data.status === 'Delivered' 
+                            ? 'text-green-600' 
+                            : trackingResult.data.status === 'In Transit'
+                            ? 'text-blue-600'
+                            : 'text-orange-600'
+                        }`}>
+                          {trackingResult.data.status}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[#555] text-xs">Date:</span>
+                        <span className="text-[#333] text-xs font-medium">{trackingResult.data.date}</span>
+                      </div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[#555] text-xs">Time:</span>
+                        <span className="text-[#333] text-xs font-medium">{trackingResult.data.time}</span>
+                      </div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[#555] text-xs">Location:</span>
+                        <span className="text-[#333] text-xs font-medium">{trackingResult.data.location}</span>
+                      </div>
+                      <div className="mt-1 pt-1 border-t border-green-200">
+                        <p className="text-xs text-[#555]">{trackingResult.data.details}</p>
+                      </div>
+                      <p className="text-xs text-[#888] mt-2 text-center">
+                        Tracking ID: <span className="font-mono font-bold">{trackingResult.trackingId}</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-red-600 text-xs">{trackingResult.error}</p>
+                  )}
+                </div>
+              )}
+
+              <p className="text-[10px] text-[#888] text-center mt-2">
+                Enter your Whitesyns order tracking number
+              </p>
+            </div>
+          </div>
+
           <button 
             onClick={handleSearchClick}
             className="bg-transparent border-none cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300 p-1"
@@ -265,6 +400,22 @@ const Header = () => {
         }
         .nav-link.text-\\[\\#D4AF37\\]::after {
           width: 100%;
+        }
+        /* Hide dropdown arrow on hover when dropdown is open */
+        .group:hover .nav-link svg {
+          transform: rotate(180deg);
+          transition: transform 0.3s ease;
+        }
+        .group .nav-link svg {
+          transition: transform 0.3s ease;
+        }
+        /* Make sure dropdown stays open on hover */
+        .group:hover .dropdown-content {
+          display: block;
+        }
+        /* Fix for dropdown visibility */
+        .group .absolute {
+          display: block;
         }
       `}</style>
     </>

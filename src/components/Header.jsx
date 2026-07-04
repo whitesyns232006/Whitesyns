@@ -121,8 +121,13 @@ const Header = () => {
 
   const handleResultClick = (path) => {
     handleSearchClose();
-    // Navigate to the result path
     window.location.href = path;
+  };
+
+  // ✅ Track Shipment link handler - opens in new tab
+  const handleTrackClick = (e) => {
+    e.preventDefault();
+    window.open('https://ep.gov.pk/track.asp', '_blank');
   };
 
   return (
@@ -156,9 +161,16 @@ const Header = () => {
           <Link to="/orders" className={`nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] ${location.pathname === '/orders' ? 'text-[#D4AF37]' : ''}`}>
             Place Order
           </Link>
-          <Link to="/track" className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37]">
+          {/* ✅ Track Shipment - Opens in new tab */}
+          <a 
+            href="https://ep.gov.pk/track.asp" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            onClick={handleTrackClick}
+            className="nav-link text-[#333] text-base md:text-lg no-underline relative py-2 transition-all duration-300 hover:text-[#D4AF37] cursor-pointer"
+          >
             Track Shipment
-          </Link>
+          </a>
           <button 
             onClick={handleSearchClick}
             className="bg-transparent border-none cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300 p-1"

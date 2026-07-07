@@ -11,7 +11,7 @@ const FAQs = () => {
   const faqData = [
     {
       question: "What is 'Whitesyns'?",
-      answer: "'Whitesyns' is an edible teeth-whitening product made with natural ingredients like Alum, Mint, Pellitory, Calamine, and Clove etc,. It helps brighten your smile without any harmful chemicals."
+      answer: "'Whitesyns' is an edible teeth-whitening product made with natural ingredients like Alum, Mint, Pellitory, Soapstone, and Clove etc,. It helps brighten your smile without any harmful chemicals."
     },
     {
       question: "Is it really edible?",
@@ -19,7 +19,7 @@ const FAQs = () => {
     },
     {
       question: "How does it whiten teeth?",
-      answer: "'Whitesyns' gently removes surface stains caused by tea, coffee, smoking, and food using natural polishing agents like Alum, Mint, Pellitory, Calamine, and Clove etc,."
+      answer: "'Whitesyns' gently removes surface stains caused by tea, coffee, smoking, and food using natural polishing agents like Alum, Mint, Pellitory, Soapstone, and Clove etc,."
     },
     {
       question: "How often should I use it?",

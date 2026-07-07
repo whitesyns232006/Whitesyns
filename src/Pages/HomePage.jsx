@@ -44,7 +44,7 @@ const HomePage = () => {
             <span className="absolute -bottom-2 left-0 w-15 h-0.5 bg-[#D4AF37]"></span>
           </h2>
           <p className="text-[#555] text-lg leading-[1.8] mb-4">
-            WHITESYNS is Pakistan's first edible teeth-whitener made from 100% safe, natural ingredients. Enriched with Alum, Mint, Pellitory, Calamine, and Clove, it whitens teeth, freshens breath, and nourishes gums. Enjoy a confident smile anytime, without harsh chemicals.
+            WHITESYNS is Pakistan's first edible teeth-whitener made from 100% safe, natural ingredients. Enriched with Alum, Mint, Pellitory, Soapstone, and Clove, it whitens teeth, freshens breath, and nourishes gums. Enjoy a confident smile anytime, without harsh chemicals.
           </p>
           <p className="text-[#555] text-lg leading-[1.8]">
             Our unique formula is clinically tested and approved by dental professionals, providing visible results within weeks while being gentle on your enamel.

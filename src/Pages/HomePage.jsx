@@ -153,6 +153,21 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ✅ Kids Image - Full Screen Banner */}
+      <section className="w-full overflow-hidden">
+        <img 
+          src="kids.webp" 
+          alt="Whitesyns - Safe for Kids" 
+          className="w-full h-auto object-cover object-center"
+          style={{
+            width: '100%',
+            height: 'auto',
+            maxHeight: '100vh',
+            minHeight: '300px',
+          }}
+        />
+      </section>
+
       {/* Customer Reviews */}
       <CustomerReviews />
 

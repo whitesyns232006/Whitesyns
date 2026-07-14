@@ -153,19 +153,21 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ✅ Kids Image - Full Screen Banner */}
-      <section className="w-full overflow-hidden">
-        <img 
-          src="kids.webp" 
-          alt="Whitesyns - Safe for Kids" 
-          className="w-full h-auto object-cover object-center"
-          style={{
-            width: '100%',
-            height: 'auto',
-            maxHeight: '100vh',
-            minHeight: '300px',
-          }}
-        />
+      {/* ✅ Kids Image - Full Screen Banner with visible container */}
+      <section className="w-full bg-[#F5FFFA] py-0">
+        <div className="w-full flex justify-center items-center overflow-hidden">
+          <img 
+            src="kids.webp" 
+            alt="Whitesyns - Safe for Kids" 
+            className="w-full h-auto max-h-screen object-contain"
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxHeight: '100vh',
+              display: 'block',
+            }}
+          />
+        </div>
       </section>
 
       {/* Customer Reviews */}

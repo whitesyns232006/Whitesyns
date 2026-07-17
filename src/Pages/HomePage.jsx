@@ -148,7 +148,7 @@ const HomePage = () => {
 
           <p className="font-['Josefin_Sans'] text-[#555] text-xl tracking-wide italic relative pl-8">
             <span className="absolute left-0 top-1/2 -translate-y-1/2 text-2xl">🎁</span>
-            Get 2 Containers In Just Rs. 1299. Limited Offer.
+            FREE DELIVERY ALL ACROSS PAKISTAN!
           </p>
         </div>
       </section>

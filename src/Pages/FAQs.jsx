@@ -51,7 +51,7 @@ const FAQs = () => {
     },
     {
       question: "What are the delivery charges and time?",
-      answer: "Delivery charges are Rs. 100 flat. Orders usually arrive in 5–7 business days, depending on your location."
+      answer: "Delivery charges are Rs. 150 flat. Orders usually arrive in 5–7 business days, depending on your location."
     },
     {
       question: "Do you offer Cash on Delivery (COD)?",

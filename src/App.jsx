@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import ReactPixel from 'react-facebook-pixel'; // 1. Pixel library import ki
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ShopNowModal from './components/ShopNowModal';
@@ -12,16 +12,12 @@ import TermsOfService from './Pages/TermsOfService';
 import OrderForm from './Pages/OrderForm';
 import OrderConfirmation from './Pages/OrderConfirmation';
 
-// ScrollToTop and Track Page Views component
-const ScrollToTopAndTrack = () => {
+// ScrollToTop component
+const ScrollToTop = () => {
   const { pathname, key } = useLocation();
 
   useEffect(() => {
-    // Har dafa jab page change ho, toh top par scroll karein
     window.scrollTo(0, 0);
-    
-    // Har page change par Meta Pixel ko batayein ke naya page open hua hai
-    ReactPixel.pageView();
   }, [pathname, key]);
 
   return null;
@@ -38,17 +34,6 @@ const RouteWrapper = ({ children }) => {
 };
 
 function App() {
-  // 2. App load hote hi Pixel ko initialize karna
-  useEffect(() => {
-    const pixelId = '4501601876652560'; // Tumhara exact Pixel ID
-    const options = {
-      autoConfig: true, // Automatic matches active karne ke liye
-      debug: false,     // console clean rakhne ke liye production mein false kiya hai
-    };
-    
-    ReactPixel.init(pixelId, {}, options);
-  }, []);
-
   return (
     <HelmetProvider>
       <div className="flex flex-col min-h-screen">
@@ -58,8 +43,7 @@ function App() {
           <link rel="canonical" href="https://whitesynspakistan.com.pk/" />
         </Helmet>
         
-        {/* Is component mein scroll bhi hoga aur automatic track bhi */}
-        <ScrollToTopAndTrack />
+        <ScrollToTop />
         <Header />
         
         <main className="grow">
